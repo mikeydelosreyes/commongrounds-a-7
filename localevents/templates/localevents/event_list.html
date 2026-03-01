@@ -1,6 +1,7 @@
 {% extends 'localevents/base_localevents.html' %}
 {% load static %}
 
+{% block header %}<h1>Event List</h1>{% endblock %}
 {% block content %}
     <ul>
         {% for event in event_list %}

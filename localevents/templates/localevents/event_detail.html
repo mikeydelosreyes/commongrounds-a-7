@@ -4,11 +4,15 @@
 {% block header %}<h1>Event | {{ event.title }}</h1>{% endblock %}
 
 {% block content %}
+    <h3><a href="{% url 'localevents:event_list' %}">Go back</a></h3>
     <h2>Category: {{ event.category.name }}</h2>
-    - Description: {{ event.description }}
-    - Location: {{ event.location }}
-    - Start time: {{ event.start_time|date:"Y-m-d"}}
-    - End time: {{ event.end_time|date:"Y-m-d"}}
-    - Created: {{ event.created_on|date:"Y-m-d"}}
-    - Last updated: {{ event.updated_on|date:"Y-m-d"}}
+    <ul>
+        <li>Description: {{ event.description }}</li>
+        <li>Location: {{ event.location }}</li> 
+        <li>Start time: {{ event.start_time|date:"Y-m-d"}}</li>
+        <li>End time: {{ event.end_time|date:"Y-m-d"}}</li>
+        <li>Created: {{ event.created_on|date:"Y-m-d"}}</li>
+        <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
+    </ul>
+
 {% endblock %}
