@@ -7,9 +7,9 @@ from .models import *
 
 class EventListView(ListView):
     model = Event
-    template_name = #TEMPLATE TBA
+    template_name = "localevents/event_list.html"
     
 
 class EventDetailView(DetailView):
     model = Event
-    template_name = #TEMPLATE TBA
+    template_name = "localevents/event_detail.html"
