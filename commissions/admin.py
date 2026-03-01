@@ -1,13 +1,8 @@
 from django.contrib import admin
 from .models import *
 
-class CommissionInline(admin.TabularInline):
-    model = Commission
-
-
 class CommissionTypeAdmin(admin.ModelAdmin):
     model = CommissionType
-    inlines = [CommissionInline, ]
 
 
 class CommissionAdmin(admin.ModelAdmin):
