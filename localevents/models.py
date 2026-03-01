@@ -22,7 +22,7 @@ class EventType(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(EventType, on_delete=models.SET_NULL,
-                                  related_name='events')
+                                  related_name='events', null=True)
     description = models.TextField()
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
