@@ -5,12 +5,12 @@ class CommissionInline(admin.TabularInline):
     model = Commission
 
 
-class CommissionTypeAdmin(admin.modelAdmin):
+class CommissionTypeAdmin(admin.ModelAdmin):
     model = CommissionType
     inlines = [CommissionInline, ]
 
 
-class CommissionAdmin(admin.modelAdmin):
+class CommissionAdmin(admin.ModelAdmin):
     model = Commission
 
     search_fields = ('title', )
