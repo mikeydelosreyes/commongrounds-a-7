@@ -4,7 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('requests', CommissionListView.as_view(), name='commission_list'),
-    path('request/<int:pk>', CommissionDetailView.as_view(), name='commission_detail')
+    path('request/<int:pk>', CommissionDetailView.as_view(),
+         name='commission_detail')
 ]
 
 

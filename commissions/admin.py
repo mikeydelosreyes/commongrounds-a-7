@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import *
 
+
 class CommissionTypeAdmin(admin.ModelAdmin):
     model = CommissionType
 
@@ -21,6 +22,7 @@ class CommissionAdmin(admin.ModelAdmin):
             ]
         })
     ]
+
 
 admin.site.register(CommissionType)
 admin.site.register(Commission)

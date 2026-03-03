@@ -4,9 +4,11 @@ from django.views.generic.detail import DetailView
 
 from .models import *
 
+
 class CommissionListView(ListView):
     model = Commission
     template_name = "commissions/commissions_list.html"
+
 
 class CommissionDetailView(DetailView):
     model = Commission
