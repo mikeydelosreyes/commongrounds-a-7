@@ -22,5 +22,5 @@ class CommissionAdmin(admin.ModelAdmin):
         })
     ]
 
-admin.site.register(CommissionType, CommissionTypeAdmin)
-admin.site.register(Commission, CommissionAdmin)
+admin.site.register(CommissionType)
+admin.site.register(Commission)
