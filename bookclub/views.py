@@ -15,3 +15,7 @@ from django.contrib.auth.views import PasswordResetCompleteView
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+
+class BooksListView(ListView):
+    model = Recipe
+    template_name = "bookclub/books_list.html"
