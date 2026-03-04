@@ -21,7 +21,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title', 'created_on'), 'category',
+                ('title', 'created_on', 'category'),
             ]
         }),
     ]
