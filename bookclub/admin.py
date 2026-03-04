@@ -15,17 +15,17 @@ class GenreAdmin(admin.ModelAdmin):
 class BookAdmin(admin.ModelAdmin):
     model = Book
 
-    search_fields = ('name', )
+    search_fields = ('title', )
 
-    list_display = ('name', 'due_date')
+    list_display = ('title', 'publication_year')
 
-    list_filter = ('due_date',)
+    list_filter = ('publication_year',)
 
     fieldsets = [
 
         ('Details', {
             'fields': [
-                ('name', 'due_date'), 'Genre'
+                ('title', 'author', 'publication_year' ), 'Genre'
             ]
         }),
     ]
