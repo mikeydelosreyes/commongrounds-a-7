@@ -15,9 +15,9 @@ class ProjectCategory(models.Model):
         return reverse('diyprojects_detail', args=[str(self.pk)])
 
     class Meta:
-        ordering = ['title']
+        ordering = ['name']
         verbose_name = 'project list'
-        verbose_name_plural = 'projects lists'
+        verbose_name_plural = 'project lists'
 
 class Project(models.Model):
     title = models.CharField(max_length=255)
