@@ -4,16 +4,18 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from .models import Profile 
+from .models import Profile
 from .models import Genre, Book
+
 
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
 
+
 class BookAdmin(admin.ModelAdmin):
     model = Book
 
-    search_fields  = ('name', )
+    search_fields = ('name', )
 
     list_display = ('name', 'due_date')
 
@@ -28,6 +30,6 @@ class BookAdmin(admin.ModelAdmin):
         }),
     ]
 
+
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Book, BookAdmin)
-

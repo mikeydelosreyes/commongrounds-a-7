@@ -15,12 +15,12 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
+
 class BooksListView(ListView):
     model = Book
     template_name = "bookclub/books_list.html"
 
+
 class BookDetailView(DetailView):
     model = Book
     template_name = "bookclub/books_detail.html"
-    
-    

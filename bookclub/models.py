@@ -1,14 +1,15 @@
 from django.db import models
-from  datetime import datetime
+from datetime import datetime
 from django.urls import reverse
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
+
 class Genre(models.Model):
 
-    name=models.CharField(max_length=255)
-    description=models.TextField()
-    
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
     class Meta:
         ordering = ['name']
         verbose_name = 'genre'
@@ -17,11 +18,11 @@ class Genre(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
-    genre = models.ForeignKey(Genre, 
-                            on_delete=models.SET_NULL, 
-                            related_name="genres")
+    genre = models.ForeignKey(Genre,
+                              on_delete=models.SET_NULL,
+                              related_name="genres")
     author = models.CharField()
-    publication_year=models.IntegerField()
+    publication_year = models.IntegerField()
     created_on = models.DateTimeField(null=False,
                                       auto_now_add=True)
 
