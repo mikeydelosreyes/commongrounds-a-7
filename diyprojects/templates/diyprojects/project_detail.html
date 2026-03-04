@@ -2,4 +2,15 @@
 
 {% block content %}
 
+    <h3>{{project.title}}</h3>
+
+    <ul>
+        <li>Description: {{project.description}}</li>
+        <li>Materials: {{project.materials}}</li>
+        <li>Steps: {{project.steps}}</li>
+        <li>Created On: {{project.created_on}}</li>
+        <li>Updated On: {{project.updated_on}}</li>
+        <a href="{% url 'diyprojects:project_list' %}}">Back to Projects List </a>
+    </ul>
+
 {% endblock %}

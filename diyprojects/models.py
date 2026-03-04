@@ -29,7 +29,7 @@ class Project(models.Model):
     updated_on = models.DateTimeField(auto_now=True, null=True, blank=True)  
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         return reverse('diyprojects_detail', args=[str(self.pk)])

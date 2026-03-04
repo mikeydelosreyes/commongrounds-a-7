@@ -5,11 +5,11 @@
     <h3>Projects</h3>
 
     <ul>
-        <li>
-            {% for project in projects %}
-                <a href="{{project.get_absolute_url}}"> {{project.title}} </a>
-            {% endfor %}
-        </li>
+        {% for project in projects %}
+            <li>                
+                <a href="{{project.get_absolute_url}}"> {{project.title}} </a>                
+            </li>
+        {% endfor %}
     </ul>
 
 {% endblock %}
