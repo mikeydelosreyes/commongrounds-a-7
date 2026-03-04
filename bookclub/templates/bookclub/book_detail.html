@@ -1,0 +1,27 @@
+
+{% extends 'bookclub/base_bookclub.html' %}
+{% load static %}
+
+
+{% block title %}Recipe 
+
+
+{% endblock %}
+
+
+
+
+
+{% block content %}
+{{ block.super }}
+{{ book.title }}
+    <ul>
+        <li> Author : {{ book.author }} </li>
+        <li> Genre : {{ book.genre }} </li>
+        <li> Publication Year : {{ book.publication_year }} </li>
+        <li> Created On : {{ book.created_on }} </li>
+        <li> Updated On : {{ book.updated_on }} </li>
+
+    </ul>
+{% endblock %}
+
