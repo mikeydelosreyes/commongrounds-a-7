@@ -3,8 +3,7 @@ from django.views.generic import FormView
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
-from .forms import Taskforms
-from .models import Recipe, RecipeIngredient, Ingredient
+from .models import Book, Genre
 
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -17,11 +16,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 
 class BooksListView(ListView):
-    model = Recipe
+    model = Book
     template_name = "bookclub/books_list.html"
 
 class BookDetailView(DetailView):
-    model = Recipe
+    model = Book
     template_name = "bookclub/books_detail.html"
     
     
