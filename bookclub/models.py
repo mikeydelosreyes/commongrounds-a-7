@@ -13,3 +13,16 @@ class Genre(models.Model):
         ordering = ['name']
         verbose_name = 'genre'
         verbose_name_plural = 'genres'
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    genre = models.ForeignKey(Genre, 
+                            on_delete=models.SET_NULL, 
+                            related_name="genre")
+    author = models.CharField()
+    publication_year=models.IntegerField()
+    created_on = models.DateTimeField(null=False,
+                                      auto_now_add=True)
+
+    updated_on = models.DateTimeField(null=False, auto_now=True)
