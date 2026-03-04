@@ -19,3 +19,9 @@ from django.contrib.auth.models import User
 class BooksListView(ListView):
     model = Recipe
     template_name = "bookclub/books_list.html"
+
+class BookDetailView(DetailView):
+    model = Recipe
+    template_name = "bookclub/books_detail.html"
+    
+    
