@@ -26,3 +26,14 @@ class Book(models.Model):
                                       auto_now_add=True)
 
     updated_on = models.DateTimeField(null=False, auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("book_detail", kwargs={"pk": self.pk})
+
+    class Meta:
+        ordering = ['-publication_year']
+        verbose_name = 'book'
+        verbose_name_plural = 'books'
