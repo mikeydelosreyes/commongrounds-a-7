@@ -9,3 +9,7 @@ class Genre(models.Model):
     name=models.CharField(max_length=255)
     description=models.TextField()
     
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'genre'
+        verbose_name_plural = 'genres'
