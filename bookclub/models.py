@@ -15,6 +15,8 @@ class Genre(models.Model):
         verbose_name = 'genre'
         verbose_name_plural = 'genres'
 
+    def get_absolute_url(self):
+        return reverse("books_list")
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
