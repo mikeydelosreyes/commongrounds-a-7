@@ -9,3 +9,22 @@ from .models import Genre, Book
 
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
+
+class BookAdmin(admin.ModelAdmin):
+    model = Book
+
+    search_fields  = ('name', )
+
+    list_display = ('name', 'due_date')
+
+    list_filter = ('due_date',)
+
+    fieldsets = [
+
+        ('Details', {
+            'fields': [
+                ('name', 'due_date'), 'Genre'
+            ]
+        }),
+    ]
+
