@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'diyprojects/base.html' %}
 
 {% block content %}
 
@@ -10,7 +10,7 @@
         <li>Steps: {{project.steps}}</li>
         <li>Created On: {{project.created_on}}</li>
         <li>Updated On: {{project.updated_on}}</li>
-        <a href="{% url 'diyprojects:project_list' %}}">Back to Projects List </a>
+        <a href="{% url 'diyprojects:project_list' %}">Back to Projects List </a>
     </ul>
 
 {% endblock %}
