@@ -1,16 +1,16 @@
-{% extends 'diyprojects/base.html' %}
+{% extends 'diyprojects/base_diyprojects.html' %}
 
+{% block title %}{{ project.title }}{% endblock %}
+{% block header %}<h1>Project | {{ project.title }}</h1>{% endblock %}
 {% block content %}
-
-    <h3>{{project.title}}</h3>
-
+    <h3><a href="{% url 'localevents:event_list' %}">Go back</a></h3>
+    <h2>Category: {{ project.category.name }}</h2>
     <ul>
         <li>Description: {{project.description}}</li>
         <li>Materials: {{project.materials}}</li>
         <li>Steps: {{project.steps}}</li>
         <li>Created On: {{project.created_on}}</li>
         <li>Updated On: {{project.updated_on}}</li>
-        <a href="{% url 'diyprojects:project_list' %}">Back to Projects List </a>
     </ul>
 
 {% endblock %}

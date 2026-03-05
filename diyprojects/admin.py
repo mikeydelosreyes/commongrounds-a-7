@@ -1,13 +1,15 @@
 from django.contrib import admin
 from .models import Project, ProjectCategory
-# Register your models here.
+
 
 class ProjectInline(admin.TabularInline):
     model = Project
 
+
 class ProjectCategoryAdmin(admin.ModelAdmin):
     model = ProjectCategory
     inlines = [ProjectInline]
+
 
 class ProjectAdmin(admin.ModelAdmin):
     model = Project
@@ -21,10 +23,11 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title', 'category'),
+                ('title', 'created_on', 'updated_on',), 'category'
             ]
         }),
     ]
+
 
 admin.site.register(ProjectCategory, ProjectCategoryAdmin)
 admin.site.register(Project, ProjectAdmin)
