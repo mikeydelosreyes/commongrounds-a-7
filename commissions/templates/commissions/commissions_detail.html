@@ -1,0 +1,15 @@
+{% extends 'commissions/base_commissions.html' %}
+
+{% block title %}{{ commission.title }}{% endblock %}
+{% block header %}<h1>Commission | {{ commission.title }}</h1> {% endblock %}
+
+{% block content %}
+    <h2>Title: {{ commission.title }}</h2>
+    <ul>
+        <li>Description: {{ commission.description}}</li>
+        <li>Amount of people required: {{commission.people_required }}</li>
+        <li>Created: {{ commission.created_on|date:"Y-m-d"}}</li>
+        <li>Last updated: {{ commission.updated_on|date:"Y-m-d"}}</li>
+    </ul>
+
+{% endblock %}
