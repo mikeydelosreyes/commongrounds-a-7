@@ -11,6 +11,7 @@ class ProjectCategoryAdmin(admin.ModelAdmin):
     inlines = [ProjectInline]
 
 
+
 class ProjectAdmin(admin.ModelAdmin):
     model = Project
 
@@ -23,7 +24,7 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title'), 'category'
+                ('title', 'description', 'materials', 'steps'), 'category'
             ]
         }),
     ]
