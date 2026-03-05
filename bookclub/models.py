@@ -17,7 +17,7 @@ class Genre(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("books_list")
+        return reverse("book_list")
 
 
 class Book(models.Model):
