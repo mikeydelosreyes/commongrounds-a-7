@@ -20,7 +20,8 @@ class ProjectCategory(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=255)
-    category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL,
+                                 related_name='categories', null=True)
     description = models.TextField()
     materials = models.TextField()
     steps = models.TextField()
