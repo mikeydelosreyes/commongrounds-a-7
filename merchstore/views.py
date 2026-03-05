@@ -5,11 +5,11 @@ from django.views.generic.detail import DetailView
 from .models import *
 
 
-class MerchListView(ListView):
+class ProductListView(ListView):
     model = Product
     template_name = "merchstore/item_list.html"
 
 
-class MerchDetailView(DetailView):
+class ProductDetailView(DetailView):
     model = Product
     template_name = "merchstore/item_detail.html"

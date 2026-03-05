@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.db import models
+from django.urls import *
 
 
 class ProductType(models.Model):
@@ -8,6 +10,8 @@ class ProductType(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('producttype_list', args=[str(self.name)])
 
     class Meta:
         ordering = ['name']
@@ -27,6 +31,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+        return reverse('merchstore:product_detail', args=[str(self.pk)])
 
     class Meta:
         ordering = ['name']
