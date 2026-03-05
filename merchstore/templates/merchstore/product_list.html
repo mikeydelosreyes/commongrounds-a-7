@@ -1,12 +1,12 @@
-{% extends 'localevents/base_localevents.html' %}
+{% extends 'merchstore/base_merchstore.html' %}
 {% load static %}
 
-{% block header %}<h1>Event List</h1>{% endblock %}
+{% block header %}<h1>Product List</h1>{% endblock %}
 {% block content %}
     <ul>
-        {% for event in event_list %}
-            <li><a href ="{{ event.get_absolute_url }}">
-            {{ event.title }} - {{ event.start_time|date:"Y-m-d" }}</a></li>
+        {% for product in product_list %}
+            <li><a href ="{{ product.get_absolute_url }}">
+            {{ product.name }} - {{ product.price }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
