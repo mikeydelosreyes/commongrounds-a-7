@@ -24,7 +24,7 @@ class BookAdmin(admin.ModelAdmin):
 
         ('Details', {
             'fields': [
-                ('title', 'author', 'publication_year' ), 'Genre'
+                ('title', 'author', 'publication_year' ), 'genre'
             ]
         }),
     ]

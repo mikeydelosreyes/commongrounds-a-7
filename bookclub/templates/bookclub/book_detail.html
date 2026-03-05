@@ -1,26 +1,17 @@
 {% extends 'bookclub/base_bookclub.html' %}
 {% load static %}
 
-
-{% block title %}Recipe 
-
-
-{% endblock %}
-
-
-
-
+{% block title %}{{ book.title }}{% endblock %}
+{% block header %}<h1>Book | {{ book.title }}</h1>{% endblock %}
 
 {% block content %}
-{{ block.super }}
-{{ book.title }}
+    <h3><a href="{% url 'bookclub:book_list' %}">Go back</a></h3>
+    <h2>Genre: {{ book.genre.name }}</h2>
     <ul>
-        <li> Author : {{ book.author }} </li>
-        <li> Genre : {{ book.genre }} </li>
-        <li> Publication Year : {{ book.publication_year }} </li>
-        <li> Created On : {{ book.created_on }} </li>
-        <li> Updated On : {{ book.updated_on }} </li>
-
+        <li>Author: {{ book.author }}</li>
+        <li>Publication year: {{ book.publication_year|date:"Y"}}</li>
+        <li>Created: {{ event.created_on|date:"Y-m-d"}}</li>
+        <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
     </ul>
 {% endblock %}
 
