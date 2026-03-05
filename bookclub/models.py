@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 
 
 class Genre(models.Model):
-
     name = models.CharField(max_length=255)
     description = models.TextField()
+
 
     class Meta:
         ordering = ['name']
@@ -34,10 +34,10 @@ class Book(models.Model):
     updated_on = models.DateTimeField(null=False, auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
-        return reverse("book_detail", kwargs={"pk": self.pk})
+        return reverse('bookclub:book_detail', args=[str(self.pk)])
 
     class Meta:
         ordering = ['-publication_year']
