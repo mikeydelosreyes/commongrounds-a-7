@@ -2,8 +2,13 @@ from django.contrib import admin
 from .models import Genre, Book
 
 
+class BookInLine(admin.TabularInline):
+    model = Book
+
+
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
+    inlines = [BookInLine,]
 
 
 class BookAdmin(admin.ModelAdmin):
