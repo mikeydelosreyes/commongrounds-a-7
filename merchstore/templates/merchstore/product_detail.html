@@ -1,18 +1,14 @@
 {% extends 'merchstore/base_merchstore.html' %}
 
-{% block title %}{{ event.title }}{% endblock %}
-{% block header %}<h1>Event | {{ event.title }}</h1>{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block header %}<h1>Product | {{ product.name }}</h1>{% endblock %}
 
 {% block content %}
-    <h3><a href="{% url 'localevents:event_list' %}">Go back</a></h3>
-    <h2>Category: {{ event.category.name }}</h2>
+    <h3><a href="{% url 'merchstore:product_list' %}">Go back</a></h3>
+    <h2>Product Type: {{ product.product_type.name }}</h2>
     <ul>
-        <li>Description: {{ event.description }}</li>
-        <li>Location: {{ event.location }}</li> 
-        <li>Start time: {{ event.start_time|date:"Y-m-d"}}</li>
-        <li>End time: {{ event.end_time|date:"Y-m-d"}}</li>
-        <li>Created: {{ event.created_on|date:"Y-m-d"}}</li>
-        <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
+        <li>Description: {{ product.description }}</li>
+        <li>Price: {{ product.location }}</li> 
     </ul>
 
 {% endblock %}
