@@ -7,7 +7,7 @@
         {% for project in project_list %}
             <li>                
                 <a href="{{project.get_absolute_url}}">
-                {{project.title}} </a>                
+                {{project.title}} - {{ project.created_on }}</a>                
             </li>
         {% endfor %}
     </ul>
