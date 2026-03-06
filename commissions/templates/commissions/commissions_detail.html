@@ -4,6 +4,7 @@
 {% block header %}<h1>Commission | {{ commission.title }}</h1> {% endblock %}
 
 {% block content %}
+    <h3><a href="{% url 'commissions:commission_list' %}">Go back to Commissions</a></h3>
     <h2>Title: {{ commission.title }}</h2>
     <ul>
         <li>Description: {{ commission.description}}</li>

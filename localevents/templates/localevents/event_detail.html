@@ -4,7 +4,7 @@
 {% block header %}<h1>Event | {{ event.title }}</h1>{% endblock %}
 
 {% block content %}
-    <h3><a href="{% url 'localevents:event_list' %}">Go back</a></h3>
+    <h3><a href="{% url 'localevents:event_list' %}">Go back to Events</a></h3>
     <h2>Category: {{ event.category.name }}</h2>
     <ul>
         <li>Description: {{ event.description }}</li>

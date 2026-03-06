@@ -3,14 +3,14 @@
 {% block title %}{{ project.title }}{% endblock %}
 {% block header %}<h1>Project | {{ project.title }}</h1>{% endblock %}
 {% block content %}
-    <h3><a href="{% url 'localevents:event_list' %}">Go back</a></h3>
+    <h3><a href="{% url 'localevents:event_list' %}">Go back to Projects</a></h3>
     <h2>Category: {{ project.category.name }}</h2>
     <ul>
         <li>Description: {{project.description}}</li>
         <li>Materials: {{project.materials}}</li>
         <li>Steps: {{project.steps}}</li>
-        <li>Created On: {{project.created_on}}</li>
-        <li>Updated On: {{project.updated_on}}</li>
+        <li>Created: {{ project.created_on|date:"Y-m-d"}}</li>
+        <li>Last updated: {{ project.updated_on|date:"Y-m-d"}}</li>
     </ul>
 
 {% endblock %}

@@ -4,7 +4,7 @@
 {% block header %}<h1>Product | {{ product.name }}</h1>{% endblock %}
 
 {% block content %}
-    <h3><a href="{% url 'merchstore:product_list' %}">Go back</a></h3>
+    <h3><a href="{% url 'merchstore:product_list' %}">Go back to Items</a></h3>
     <h2>Product Type: {{ product.product_type.name }}</h2>
     <ul>
         <li>Description: {{ product.description }}</li>

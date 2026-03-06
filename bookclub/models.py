@@ -27,10 +27,10 @@ class Book(models.Model):
                               null=True)
     author = models.CharField()
     publication_year = models.IntegerField()
-    created_on = models.DateTimeField(null=False,
+    created_on = models.DateTimeField(null=True,
                                       auto_now_add=True)
 
-    updated_on = models.DateTimeField(null=False, auto_now=True)
+    updated_on = models.DateTimeField(null=True, auto_now=True)
 
     def __str__(self):
         return self.title
