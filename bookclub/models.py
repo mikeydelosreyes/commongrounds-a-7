@@ -46,4 +46,15 @@ class Book(models.Model):
         verbose_name = 'book'
         verbose_name_plural = 'books'
 
-
+class BookReview(models.Model):
+    UserReviewer = models.ForeignKey(User,
+                                     on_delete=models.CASCADE,
+                                     null=True,
+                                     blank=True)
+    AnonReviewer = models.TextField()
+    book = models.ForeignKey(Book, 
+                             verbose_name="books",
+                             on_delete=models.CASCADE)
+    title = models.CharField()
+    comment = models.TextField()
+    
