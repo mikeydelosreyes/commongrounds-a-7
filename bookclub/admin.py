@@ -1,15 +1,14 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-
-from .models import Profile
 from .models import Genre, Book
+
+
+class BookInLine(admin.TabularInline):
+    model = Book
 
 
 class GenreAdmin(admin.ModelAdmin):
     model = Genre
+    inlines = [BookInLine,]
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -25,7 +24,7 @@ class BookAdmin(admin.ModelAdmin):
 
         ('Details', {
             'fields': [
-                ('title', 'author', 'publication_year' ), 'Genre'
+                ('title', 'author', 'publication_year' ), 'genre'
             ]
         }),
     ]

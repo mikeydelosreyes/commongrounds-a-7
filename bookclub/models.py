@@ -1,14 +1,11 @@
 from django.db import models
-from datetime import datetime
 from django.urls import reverse
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
 
 
 class Genre(models.Model):
-
     name = models.CharField(max_length=255)
     description = models.TextField()
+
 
     class Meta:
         ordering = ['name']
@@ -19,13 +16,15 @@ class Genre(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("books_list")
+        return reverse("book_list")
+
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
     genre = models.ForeignKey(Genre,
                               on_delete=models.SET_NULL,
-                              related_name="genres")
+                              related_name="books",
+                              null=True)
     author = models.CharField()
     sypnopsis = models.TextField()
     publication_year = models.IntegerField()
@@ -33,13 +32,13 @@ class Book(models.Model):
     created_on = models.DateTimeField(null=False,
                                       auto_now_add=True)
 
-    updated_on = models.DateTimeField(null=False, auto_now=True)
+    updated_on = models.DateTimeField(null=True, auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
-        return reverse("book_detail", kwargs={"pk": self.pk})
+        return reverse('bookclub:book_detail', args=[str(self.pk)])
 
     class Meta:
         ordering = ['-publication_year']
