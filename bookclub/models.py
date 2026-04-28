@@ -27,7 +27,9 @@ class Book(models.Model):
                               on_delete=models.SET_NULL,
                               related_name="genres")
     author = models.CharField()
+    sypnopsis = models.TextField()
     publication_year = models.IntegerField()
+    borrow_availability = models.BooleanField()
     created_on = models.DateTimeField(null=False,
                                       auto_now_add=True)
 
@@ -43,3 +45,5 @@ class Book(models.Model):
         ordering = ['-publication_year']
         verbose_name = 'book'
         verbose_name_plural = 'books'
+
+
