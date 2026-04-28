@@ -24,3 +24,12 @@ class BooksListView(ListView):
 class BookDetailView(DetailView):
     model = Book
     template_name = "bookclub/books_detail.html"
+
+class BookCreateView():
+    model = Book
+
+class BookUpdateView():
+    model = Book
+
+class BookSignupView():
+    model = Book
