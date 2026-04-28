@@ -29,7 +29,7 @@ class Book(models.Model):
     sypnopsis = models.TextField()
     publication_year = models.IntegerField()
     borrow_availability = models.BooleanField()
-    created_on = models.DateTimeField(null=False,
+    created_on = models.DateTimeField(null=True,
                                       auto_now_add=True)
 
     updated_on = models.DateTimeField(null=True, auto_now=True)
