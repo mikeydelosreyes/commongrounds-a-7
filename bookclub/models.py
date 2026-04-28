@@ -47,14 +47,23 @@ class Book(models.Model):
         verbose_name_plural = 'books'
 
 class BookReview(models.Model):
-    UserReviewer = models.ForeignKey(User,
+    UserReviewer = models.ForeignKey(Profile,
                                      on_delete=models.CASCADE,
                                      null=True,
                                      blank=True)
     AnonReviewer = models.TextField()
-    book = models.ForeignKey(Book, 
+    bookreview_book = models.ForeignKey(Book, 
                              verbose_name="books",
                              on_delete=models.CASCADE)
-    title = models.CharField()
-    comment = models.TextField()
-    
+    bookreview_title = models.CharField()
+    bookreview_comment = models.TextField()
+
+class Bookmark(models.Model):
+    bookmark_profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    bookmark_book = models.ForeignKey(Book, on_delte=models.CASCADE)
+    bookmark_date = models.DateTimeField(null=False,
+                                         auto_now_add=True)
+
+
+
+
