@@ -64,6 +64,15 @@ class Bookmark(models.Model):
     bookmark_date = models.DateTimeField(null=False,
                                          auto_now_add=True)
 
-
+class Borrow(models.Model):
+    borrow_book = models.ForeignKey(Book, on_delte=models.CASCADE)
+    borrower = models.ForeignKey(Profile,
+                                 on_delete=models.CASCADE,
+                                 null=True,
+                                 blank=True)
+    book_name = models.CharField()
+    bookmark_date = models.DateTimeField(null=False,
+                                         auto_now_add=True)
+    borrow_returndate = models.DateField()
 
 
