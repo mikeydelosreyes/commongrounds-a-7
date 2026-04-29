@@ -23,6 +23,7 @@ class Project(models.Model):
     category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL,
                                  related_name='projects', null=True)
     creator = models.ForeignKey(on_delete=models.SET_NULL)
+    #doesnt have the foreign key for profile yet
     description = models.TextField()
     materials = models.TextField()
     steps = models.TextField()
@@ -39,3 +40,15 @@ class Project(models.Model):
         ordering = ['-created_on']
         verbose_name = 'project'
         verbose_name_plural = 'projects'
+
+class Favorite(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    profile = models.ForeignKey(on_delete=models.CASCADE)
+    date_favorited = models.DateTimeField(auto_now_add=True, null=True)
+    project_status = models.CharField(max_length=100, choices=[
+        ('backlog','Backlog'), 
+        ('to-do','To-Do'), 
+        ('done', 'Done')
+        ])
+
+
