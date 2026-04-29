@@ -57,5 +57,8 @@ class ProjectReview(models.Model):
     #doesnt have the foreign key for profile yet
     comment = models.TextField()
     image = models.ImageField(upload_to='images/', null=True)
-    
 
+class Projectrating(models.Model):
+    profile = models.ForeignKey(on_delete=models.CASCADE)
+    #doesnt have the foreign key for profile yet
+    score = models.IntegerField(max=10,min=1)
