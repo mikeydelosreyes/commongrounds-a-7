@@ -3,8 +3,7 @@
 <title>{% block title %}Update display name{% endblock %}</title>
 {% block header %}<h2>Update display name</h2>{% endblock %}
 {% block content %}
-    <!--Update this to actually work-->
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Update display name">
