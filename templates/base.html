@@ -6,8 +6,10 @@
     </head>
 <body>
     {% if user.is_authenticated %}
-        {% include 'registration/logout.html' %}
+        {% include 'accounts/logout.html' %}
     {% else %}
+        <a href="{% url 'login' %}"><h3>Login</h3></a>
+    {% endif %}
     {% block header %}{% endblock %}
     <div id="content">
         {% block content %}{% endblock %}

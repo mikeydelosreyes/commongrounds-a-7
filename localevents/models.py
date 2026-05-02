@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 from django.core.validators import *
 from django.urls import *
+from accounts.models import Profile
 
 class EventType(models.Model):
     name = models.CharField(max_length=255)
@@ -24,7 +25,7 @@ class Event(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(EventType, on_delete=models.SET_NULL,
                                   related_name='events', null=True)
-    #organizer = models.ManytoManyField(Profile, null=True)
+    organizer = models.ManyToManyField(Profile, null=True)
     event_image = models.ImageField()
     description = models.TextField()
     location = models.CharField(max_length=255)
