@@ -5,6 +5,9 @@
         {% block styles %}{% endblock %}
     </head>
 <body>
+    {% if user.is_authenticated %}
+        {% include 'registration/logout.html' %}
+    {% else %}
     {% block header %}{% endblock %}
     <div id="content">
         {% block content %}{% endblock %}
