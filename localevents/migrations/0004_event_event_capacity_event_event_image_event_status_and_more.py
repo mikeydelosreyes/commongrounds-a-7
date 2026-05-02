@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='event_capacity',
-            field=models.PositiveIntegerField(default=datetime.datetime(2026, 5, 2, 9, 22, 26, 553669, tzinfo=datetime.timezone.utc), validators=[django.core.validators.MinValueValidator(1)]),
+            field=models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)]),
             preserve_default=False,
         ),
         migrations.AddField(
