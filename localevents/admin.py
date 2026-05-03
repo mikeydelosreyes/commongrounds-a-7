@@ -18,12 +18,17 @@ class EventAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'location', 'start_time', 'end_time',)
 
-    list_filter = ('location', 'start_time', 'end_time',)  
+    list_filter = ('title', 'location',)  
 
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title', 'location', 'start_time', 'end_time'), 'category',
+                ('title', 'location', 'start_time', 'end_time', 'event_capacity',),
+                'organizer',
+                'category',
+                'event_image',
+                'description',
+                'status',
             ]
         }),
     ]
