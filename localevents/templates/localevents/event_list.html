@@ -5,8 +5,15 @@
 {% block content %}
     <ul>
         {% for event in event_list %}
+            #user's events
+            <li><a href ="{{ event.get_absolute_url }}">
+            {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+        {% endfor %}
+        {% for event in event_list %}
+            #all other events
             <li><a href ="{{ event.get_absolute_url }}">
             {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
         {% endfor %}
     </ul>
+    <!--signup link here--> 
 {% endblock %}
