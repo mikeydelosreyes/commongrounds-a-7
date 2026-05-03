@@ -51,27 +51,57 @@ class BookReview(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="reviews"
+        related_name="reviewer"
     )
     AnonReviewer = models.TextField()
     bookreview_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
-        related_name="reviews"
+        related_name="reviewed_books"
     )
     bookreview_title = models.CharField(max_length=255)
     bookreview_comment = models.TextField()
 
+    class Meta:
+        verbose_name = 'review'
+        verbose_name_plural = 'reviews'
+
 class Bookmark(models.Model):
     bookmark_profile = models.ForeignKey(
         Profile,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="bookmarker"
     )
     bookmark_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
-        related_name="bookmarks"
+        related_name="bookmarked_books"
     )
     bookmark_date = models.DateField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'bookmark'
+        verbose_name_plural = 'bookmarks'
+
+class Borrow(models.Model):
+    borrow_book = models.ForeignKey(
+        Book, 
+        on_delte=models.CASCADE,
+        related_name="borrowed_book"    
+    )
+    borrower = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="borrower"
+    )
+    book_name = models.CharField()
+    bookmark_date = models.DateField(null=False,
+                                     auto_now_add=True)
+    borrow_returndate = models.DateField()
+
+    class Meta:
+        verbose_name = 'borrowed'
+        verbose_name_plural = 'multiple_borrowed'
 
