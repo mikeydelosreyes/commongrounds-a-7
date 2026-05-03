@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.urls import *
 from django.db.models import Case, When, Value, IntegerField
+from accounts.models import Profile
 
 
 class CommissionType(models.Model):
@@ -24,7 +25,7 @@ class Commission(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     type = models.ForeignKey(CommissionType, on_delete=models.SET_NULL, null=True)
-    #maker = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    maker = models.ForeignKey(Profile, on_delete=models.CASCADE)
     status = models.CharField(choices=(('Open', 'Open'), ('Full', 'Full')), default='Open')
     people_required = models.PositiveIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
@@ -60,7 +61,7 @@ class Job(models.Model):
 
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
-    #applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="role")
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="role")
     status = models.CharField(choices=(('Pending', 'Pending'), ('Accepted', 'Accepted'), ('Rejected', 'Rejected')), default='Pending')
     applied_on = models.DateTimeField(auto_now_add=True)
 
