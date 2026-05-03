@@ -57,7 +57,9 @@ class BookReview(models.Model):
         blank=True,
         related_name="reviewer"
     )
-    AnonReviewer = models.TextField()
+    AnonReviewer = models.TextField(
+        related_name="reviewer"
+    )
     bookreview_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
