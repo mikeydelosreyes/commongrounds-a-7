@@ -1,4 +1,4 @@
-from .models import Book
+from .models import Book, BookReview, Bookmark, Borrow
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
@@ -17,16 +17,21 @@ def book_detail(request, id):
     })
 
 
-class BookListView(LoginRequiredMixin, ListView):
+class BookListView(ListView):
     model = Book
     template_name = "bookclub/book_list.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         book = self.object
-        context[""] = RecipeIngredient.objects.filter(
-            name_recipe=book
-        )
+
+        user=self.request.user
+
+        if user.is_authenticated:
+            books_bookmarked = Bookmark.objects.filter(bookmark_profile=user)
+            books_bookreviewed = BookReview.objects.filter(UserReviewer=user)
+
+
         return context
 
 

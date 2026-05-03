@@ -46,32 +46,32 @@ class Book(models.Model):
         verbose_name_plural = 'books'
 
 class BookReview(models.Model):
-    UserReviewer = models.ForeignKey(Profile,
-                                     on_delete=models.CASCADE,
-                                     null=True,
-                                     blank=True)
+    UserReviewer = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="reviews"
+    )
     AnonReviewer = models.TextField()
-    bookreview_book = models.ForeignKey(Book, 
-                             verbose_name="books",
-                             on_delete=models.CASCADE)
-    bookreview_title = models.CharField()
+    bookreview_book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="reviews"
+    )
+    bookreview_title = models.CharField(max_length=255)
     bookreview_comment = models.TextField()
 
 class Bookmark(models.Model):
-    bookmark_profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    bookmark_book = models.ForeignKey(Book, on_delte=models.CASCADE)
-    bookmark_date = models.DateField(null=False,
-                                     auto_now_add=True)
-
-class Borrow(models.Model):
-    borrow_book = models.ForeignKey(Book, on_delte=models.CASCADE)
-    borrower = models.ForeignKey(Profile,
-                                 on_delete=models.CASCADE,
-                                 null=True,
-                                 blank=True)
-    book_name = models.CharField()
-    bookmark_date = models.DateField(null=False,
-                                     auto_now_add=True)
-    borrow_returndate = models.DateField()
+    bookmark_profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE
+    )
+    bookmark_book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="bookmarks"
+    )
+    bookmark_date = models.DateField(auto_now_add=True)
 
 
