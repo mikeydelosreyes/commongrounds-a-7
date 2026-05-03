@@ -26,7 +26,11 @@ class Commission(models.Model):
     description = models.TextField()
     type = models.ForeignKey(CommissionType, on_delete=models.SET_NULL, null=True)
     maker = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    status = models.CharField(choices=(('Open', 'Open'), ('Full', 'Full')), default='Open')
+    STATUS_CHOICES = {
+        "Open" : "Open",
+        "Full" : "Full",
+    }
+    status = models.CharField(choices=STATUS_CHOICES, default="Open")
     people_required = models.PositiveIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
@@ -46,7 +50,11 @@ class Job(models.Model):
     commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name="jobs")
     role = models.CharField(max_length=255)
     manpower_required = models.PositiveIntegerField()
-    status = models.CharField(choices=(('Open', 'Open'), ('Full', 'Full')), default='Open')
+    STATUS_CHOICES = {
+        "Open" : "Open",
+        "Full" : "Full",
+    }
+    status = models.CharField(choices=STATUS_CHOICES, default="Open")
 
     def __str__(self):
         return self.role
@@ -62,7 +70,12 @@ class Job(models.Model):
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
     applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="role")
-    status = models.CharField(choices=(('Pending', 'Pending'), ('Accepted', 'Accepted'), ('Rejected', 'Rejected')), default='Pending')
+    STATUS_CHOICES = {
+        "Pending" : "Pending",
+        "Accepted" : "Accepted",
+        "Rejected" : "Rejected",
+    }
+    status = models.CharField(choices=STATUS_CHOICES, default="Pending")
     applied_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
