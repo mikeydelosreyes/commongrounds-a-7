@@ -36,3 +36,13 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "localevents/event_update.html"
 
     #event capacity toggle here
+
+
+def event_signup(request, id):
+    event = Event.objects.get(pk=id)
+
+    #replace with a proper signup template
+    return render(request, "localevents/event_detail.html", {
+        "event": event,
+        "new_registrant": new_registrant,
+    })
