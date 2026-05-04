@@ -27,6 +27,8 @@ JobFormSet = inlineformset_factory(
 )
 
 class JobApplicationForm(forms.ModelForm):
+    job_pk = forms.IntegerField(widget=forms.HiddenInput())
+
     class Meta:
         model = JobApplication
         fields = []
