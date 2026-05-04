@@ -12,7 +12,7 @@
                 </a></li>
             {% endfor %}
         </ul>
-
+        <br>
         <ul>
             {% for commission in applied_commissions %}
                 <li><a href ="{{ commission.get_absolute_url }}">
@@ -21,7 +21,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-
+      <br>
         <ul>
             {% for commission in all_commissions %}
                 <li><a href ="{{ commission.get_absolute_url }}">
