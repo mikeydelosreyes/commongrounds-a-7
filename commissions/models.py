@@ -69,7 +69,7 @@ class Job(models.Model):
 
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
-    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="role")
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="job_applications")
     STATUS_CHOICES = {
         "Pending" : "Pending",
         "Accepted" : "Accepted",
