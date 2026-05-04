@@ -54,7 +54,7 @@ def event_signup_process(request, id):
     else:
         form = EventForm()
 
-    return render(request, "localevents/event_detail.html", { #placeholder template
+    return render(request, "localevents/event_signup.html", {
         "event": event,
         "form": form,
     })
