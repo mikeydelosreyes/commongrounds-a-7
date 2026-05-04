@@ -72,9 +72,9 @@ class JobApplication(models.Model):
     }
     status = models.CharField(choices=STATUS_CHOICES, default="1_PEND")
     applied_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.job
     
     class Meta:
         ordering = ['status', '-applied_on']
+
+    def __str__(self):
+        return f"{self.job} - {self.applicant}"
