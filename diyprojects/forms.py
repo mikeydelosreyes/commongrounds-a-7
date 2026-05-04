@@ -8,16 +8,16 @@ class ProjectForm(forms.ModelForm):
 
 class ProjectFavoriteForm(forms.ModelForm):
     class Meta:
-        model = Project
+        model = Favorite
         fields = ['project_status']
 
 class ProjectReviewForm(forms.ModelForm):
     class Meta:
-        model = Project
+        model = ProjectReview
         fields = ['comment', 'image']
 
 class ProjectRatingForm(forms.ModelForm):
     class Meta:
-        model = Project
+        model = ProjectRating
         fields = ['score']
 
