@@ -16,8 +16,21 @@
         <li>Last updated: {{ commission.updated_on|date:"Y-m-d"}}</li>
     </ul>
 
+    {% if user.profile == object.maker %}
+    <a href="{% url 'commissions:commission_update' commission.id %}">Edit Commission</a>
+    {% endif %}
+
     {% for job in jobs %}
-        
+        <p>{{ job.role }} - {{ job.manpower_required }}</p>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" 
+            {% if job.accepted_count >= job.manpower_required %}
+                disabled 
+            {% else %}
+                Apply
+            {% endif %}>
+        </form>
     {% endfor %}
 
 {% endblock %}
