@@ -121,3 +121,33 @@ class CommissionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class CommissionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Commission
     template_name = "commissions/commissions_update.html"    
+
+    def test_func(self):
+        return self.request.user.profile.role == 'Commission Maker'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = JobFormSet(self.request.POST, instance=self.object)
+        else:
+            context['formset'] = JobFormSet(instance=self.object)
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+
+        form.instance.maker = self.object.maker
+
+        if formset.is_valid():
+            self.object = form.save()
+            formset.save()
+
+            jobs = self.object.jobs.all()
+            if jobs.exists() and all(job.status == 'Full' for job in jobs):
+                self.object.status = 'Full'
+                self.object.save()
+
+            return redirect('commissions:commission-detail', pk=self.object.pk)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))    
