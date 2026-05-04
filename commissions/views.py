@@ -20,9 +20,9 @@ class CommissionListView(ListView):
              When(status='Full', then=Value(2)), 
              When(status='Completed', then=Value(3)), 
              When(status='Discontinued', then=Value(4)), 
-             default=Value(5),
+            default=Value(5),
             output_field=IntegerField(), 
-        )).order_fields('status_order', '-created_on')   
+        )).order_by('status_order', '-created_on')   
                 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -148,6 +148,6 @@ class CommissionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 self.object.status = 'Full'
                 self.object.save()
 
-            return redirect('commissions:commission-detail', pk=self.object.pk)
+            return redirect('commissions:commission_detail', pk=self.object.pk)
         else:
             return self.render_to_response(self.get_context_data(form=form))    
