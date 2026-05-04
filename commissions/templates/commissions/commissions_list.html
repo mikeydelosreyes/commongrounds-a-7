@@ -3,12 +3,30 @@
 {% block header %}<h1>Commission Requests List</h1> {% endblock %}
 
 {% block content %}
-    <ul>
-        {% for commission in commission_list %}
-            <li><a href ="{{ commission.get_absolute_url }}">
-                {{ commission.title }} - {{ commission.created_on|date:"Y-m-d" }}
-            </a></li>
-        {% endfor %}
-    </ul>
+    <a href = "">Create new commission</a>
+    {% if user.is_authenticated %}
+        <ul>
+            {% for commission in created_commissions %}
+                <li><a href ="{{ commission.get_absolute_url }}">
+                    {{ commission.title }} - {{ commission.status }} - {{ commission.created_on|date:"Y-m-d" }}
+                </a></li>
+            {% endfor %}
+        </ul>
+
+        <ul>
+            {% for commission in applied_commissions %}
+                <li><a href ="{{ commission.get_absolute_url }}">
+                    {{ commission.title }} - {{ commission.status }} - {{ commission.created_on|date:"Y-m-d" }}
+                </a></li>
+            {% endfor %}
+        </ul>
+
+        <ul>
+            {% for commission in all_commissions %}
+                <li><a href ="{{ commission.get_absolute_url }}">
+                    {{ commission.title }} - {{ commission.status }} - {{ commission.created_on|date:"Y-m-d" }}
+                </a></li>
+            {% endfor %}
+        </ul>
 
 {% endblock %}
