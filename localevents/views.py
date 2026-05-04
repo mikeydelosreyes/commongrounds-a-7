@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -40,9 +40,21 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
 
 def event_signup(request, id):
     event = Event.objects.get(pk=id)
+    form = EventSignupForm()
 
-    #replace with a proper signup template
+    if request.method == "POST":
+        form = EventSignupForm(request.POST)
+
+        if form.is_valid():
+            event_signup = form.save(commit=False)
+            event_signup.event = Event.objects.get(pk=id)
+            event_signup.save()
+            return redirect('localevents:event_detail', pk=event.pk)
+        
+    else:
+        form = EventForm()
+
     return render(request, "localevents/event_detail.html", {
         "event": event,
-        "new_registrant": new_registrant,
+        "form": form,
     })

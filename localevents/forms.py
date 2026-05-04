@@ -15,3 +15,8 @@ class EventForm(forms.ModelForm):
                 attrs={ 'type': 'datetime-local' }
             )
         }
+
+class EventSignupForm(forms.ModelForm):
+    class Meta:
+        model = EventSignup
+        fields = ['event', 'new_registrant',]
