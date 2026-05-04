@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Case, When, Value, IntegerField, Count, Q
 
 from .models import *
@@ -64,7 +64,7 @@ class CommissionDetailView(DetailView):
             
         return context  
     
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         
         if not request.user.is_authenticated:
@@ -86,13 +86,11 @@ class CommissionDetailView(DetailView):
         # Redirect back to the same page
         return redirect('commissions:commission_detail', pk=self.object.pk)
     
-class CommissionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class CommissionCreateView(LoginRequiredMixin, CreateView):
     model = Commission
     form_class = CommissionForm
     template_name = "commissions/commissions_create.html"  
 
-    def test_func(self):
-        return self.request.user.profile.role == 'Commission Maker'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,12 +116,11 @@ class CommissionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-class CommissionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class CommissionUpdateView(LoginRequiredMixin, UpdateView):
     model = Commission
+    form_class = CommissionForm
     template_name = "commissions/commissions_update.html"    
 
-    def test_func(self):
-        return self.request.user.profile.role == 'Commission Maker'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
