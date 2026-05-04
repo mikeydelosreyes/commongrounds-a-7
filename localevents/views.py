@@ -38,7 +38,7 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
     #event capacity toggle here
 
 
-def event_signup(request, id):
+def event_signup_process(request, id):
     event = Event.objects.get(pk=id)
     form = EventSignupForm()
 
@@ -54,7 +54,7 @@ def event_signup(request, id):
     else:
         form = EventForm()
 
-    return render(request, "localevents/event_detail.html", {
+    return render(request, "localevents/event_detail.html", { #placeholder template
         "event": event,
         "form": form,
     })
