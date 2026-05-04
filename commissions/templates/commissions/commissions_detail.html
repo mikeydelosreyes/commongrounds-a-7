@@ -9,8 +9,15 @@
     <ul>
         <li>Description: {{ commission.description}}</li>
         <li>Amount of people required: {{commission.people_required }}</li>
+        <li>Status: {{ commission.status }}</li>
+        <li>Total manpower: {{ total_manpower }}</li>
+        <li>Open manpower: {{ open_manpower }}</li>
         <li>Created: {{ commission.created_on|date:"Y-m-d"}}</li>
         <li>Last updated: {{ commission.updated_on|date:"Y-m-d"}}</li>
     </ul>
+
+    {% for job in jobs %}
+        
+    {% endfor %}
 
 {% endblock %}
