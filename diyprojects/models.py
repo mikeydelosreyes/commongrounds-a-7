@@ -63,6 +63,8 @@ class ProjectReview(models.Model):
     image = models.ImageField(upload_to='images/', null=True)
 
 class ProjectRating(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                related_name='ratings')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                 related_name='ratings') 
     score = models.IntegerField(max=10,min=1)
