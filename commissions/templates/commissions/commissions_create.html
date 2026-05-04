@@ -6,6 +6,10 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
+        {{ formset.management_form }}
+        {% for job_form in formset %}
+        {{ job_form }}
+        {% endfor %}
         <input type="submit" value="Post Comm">
-
+    </form>
 {% endblock %}
