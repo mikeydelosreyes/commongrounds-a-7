@@ -51,40 +51,30 @@ class Job(models.Model):
     role = models.CharField(max_length=255)
     manpower_required = models.PositiveIntegerField()
     STATUS_CHOICES = {
-        "Open" : "Open",
-        "Full" : "Full",
+        "1_OPEN" : "Open",
+        "2_FULL" : "Full",
     }
-    status = models.CharField(choices=STATUS_CHOICES, default="Open")
+    status = models.CharField(choices=STATUS_CHOICES, default="1_OPEN")
 
     def __str__(self):
         return self.role
     
     class Meta:
-        ordering = [Case(
-            When(status='Open', then=Value(1)),
-            When(status='Full', then=Value(2)),
-            output_field=IntegerField(),
-        ), 
-        '-manpower_required', 'role']
+        ordering = ['status', '-manpower_required', 'role']
 
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
     applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="job_applications")
     STATUS_CHOICES = {
-        "Pending" : "Pending",
-        "Accepted" : "Accepted",
-        "Rejected" : "Rejected",
+        "1_PEND" : "Pending",
+        "2_ACPT" : "Accepted",
+        "3_RJCT" : "Rejected",
     }
-    status = models.CharField(choices=STATUS_CHOICES, default="Pending")
+    status = models.CharField(choices=STATUS_CHOICES, default="1_PEND")
     applied_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.job
     
     class Meta:
-        ordering = [Case(
-            When(status='Pending', then=Value(1)),
-            When(status='Accepted', then=Value(2)),
-            When(status='Rejected', then=Value(3)),
-            output_field=IntegerField(),
-        ), '-applied_on']
+        ordering = ['status', '-applied_on']
