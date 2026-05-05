@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.urls import *
+from accounts.models import Profile
 
 
 class ProductType(models.Model):
@@ -60,23 +61,23 @@ class Product(models.Model):
         verbose_name = 'product'
         verbose_name_plural = 'products'
 
-# class Transaction(models.Model):
-    # Buyer = models.ForeignKey(Profile, on_delete=models.SET_NULL,
-    #                                  related_name='products', null=True)
-    # Product = models.ForeignKey(Product, on_delete=models.CASCADE,
-    #                                  related_name='transactions', null=True)
-    # Amount = models.PositiveIntergerField()
-    # STATUS_CHOICES = [
-    #     ('on_cart', 'On cart'),
-    #     ('to_pay', 'To Pay'),
-    #     ('to_ship', 'To Ship'),
-    #     ('received', 'Received'),
-    #     ('delivered', 'Delivered'),
-    # ]
+class Transaction(models.Model):
+    Buyer = models.ForeignKey(Profile, on_delete=models.SET_NULL,
+                                     related_name='products', null=True)
+    Product_Bought = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                     related_name='transactions', null=True)
+    Amount = models.PositiveIntegerField()
+    STATUS_CHOICES = [
+        ('on_cart', 'On cart'),
+        ('to_pay', 'To Pay'),
+        ('to_ship', 'To Ship'),
+        ('received', 'Received'),
+        ('delivered', 'Delivered'),
+    ]
 
-    # status = models.CharField(
-    #     max_length=20,
-    #     choices=STATUS_CHOICES,
-    #     default='on_cart'
-    # )
-    # Created_On = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='on_cart'
+    )
+    Created_On = models.DateTimeField(auto_now_add=True)
