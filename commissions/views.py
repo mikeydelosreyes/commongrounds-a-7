@@ -12,107 +12,114 @@ class CommissionListView(ListView):
     model = Commission
     template_name = "commissions/commissions_list.html"
     context_object_name = "all_commissions"
-
     def get_queryset(self):
         return Commission.objects.annotate(
             status_order=Case(
-             When(status='Open', then=Value(1)), 
-             When(status='Full', then=Value(2)), 
-             When(status='Completed', then=Value(3)), 
-             When(status='Discontinued', then=Value(4)), 
-            default=Value(5),
-            output_field=IntegerField(), 
-        )).order_by('status_order', '-created_on')   
-                
+                When(status='Open', then=Value(0)),
+                When(status='Full', then=Value(1)),
+                When(status='Completed', then=Value(2)),
+                When(status='Discontinued', then=Value(3)),
+                default=Value(4),
+                output_field=IntegerField()
+            )
+        ).order_by('status_order', '-created_on')
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        ctx = super().get_context_data(**kwargs)
         qs = self.get_queryset()
+        commissions = Commission.objects.all()
 
         if self.request.user.is_authenticated:
-            profile = self.request.user.profile
-            created_qs = qs.filter(maker=profile)
-            applied_qs = qs.filter(jobs__applications__applicant=profile).distinct()
-            all_other_qs = qs.exclude(id__in=created_qs).exclude(id__in=applied_qs)
+            current_profile = Profile.objects.get(user=self.request.user)
+            created_commissions = qs.filter(maker=current_profile)
+            applied_commissions = qs.filter(jobs__applications__applicant=current_profile)
+            other_commissions = qs.exclude(id__in=created_commissions).exclude(id__in=applied_commissions)
 
-            context['created_commissions'] = created_qs 
-            context['applied_commissions'] = applied_qs 
-            context['all_commissions'] = all_other_qs          
+            ctx["created_commissions"] = created_commissions
+            ctx["applied_commissions"] = applied_commissions
+            ctx["other_commissions"] = other_commissions
 
-        return context
+        ctx["all_commissions"] = commissions
+
+        return ctx
 
 class CommissionDetailView(DetailView):
     model = Commission
     template_name = "commissions/commissions_detail.html"
-
+    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        ctx = super().get_context_data(**kwargs)
         commission = self.object
 
-        jobs = commission.jobs.annotate(
-            accepted_count=Count('applications', 
-                                 filter=Q(applications__status='Accepted'))
-        )
+        jobs = commission.jobs.all()
         total_manpower = sum(job.manpower_required for job in jobs)
-        open_manpower = sum((job.manpower_required - job.accepted_count) for job in jobs)
-        
-        context['jobs'] = jobs
-        context['total_manpower'] = total_manpower
-        context['open_manpower'] = max(0, open_manpower) 
+        accepted = sum(job.applications.filter(status='Accepted').count() for job in jobs ) 
+
+        open_manpower = total_manpower - accepted
+        ctx['jobs'] = jobs
+        ctx['total_manpower'] = total_manpower
+        ctx['open_manpower'] = max(0, open_manpower) 
 
         if self.request.user.is_authenticated:
-            context['application_form'] = JobApplicationForm()
+            ctx['current_profile'] = self.request.user.profile
+            ctx['job_apply_form'] = JobApplicationForm()
             
-        return context  
+        job_accepted = {}
+        for job in jobs:
+            job_accepted[job.pk] = job.applications.filter(status='Accepted').count()
+        ctx['job_accepted'] = job_accepted
+
+        return ctx  
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        
+        job_id = request.POST.get('job_id')
+
         if not request.user.is_authenticated:
             return redirect('login')
 
-        job_pk = request.POST.get('job_pk')
-        if job_pk:
-            job = Job.objects.get(pk=job_pk)
-            has_applied = JobApplication.objects.filter(job=job, applicant=request.user.profile).exists()
-            
-            accepted_count = job.applications.filter(status='Accepted').count()
-            if not has_applied and accepted_count < job.manpower_required:
-                JobApplication.objects.create(
-                    job=job,
-                    applicant=request.user.profile,
-                    status='Pending'
-                )
-                
-        # Redirect back to the same page
+        job = self.object.jobs.get(id=job_id)
+        profile = request.user.profile
+
+        if JobApplication.objects.filter(job=job, applicant=profile).exists():
+            return redirect('commissions:commission_detail', pk=self.object.pk)
+
+        accepted_count = job.applications.filter(status='Accepted').count()
+        if accepted_count >= job.manpower_required:
+            return redirect('commissions:commission_detail', pk=self.object.pk)
+
+        JobApplication.objects.create(
+            job=job,
+            applicant=profile
+        )
+
         return redirect('commissions:commission_detail', pk=self.object.pk)
     
 class CommissionCreateView(LoginRequiredMixin, CreateView):
     model = Commission
     form_class = CommissionForm
     template_name = "commissions/commissions_create.html"  
-
-    
+        
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['formset'] = JobFormSet(self.request.POST)
-        else:
-            context['formset'] = JobFormSet()
-        return context
-    
+            context = super().get_context_data(**kwargs)
+            if self.request.POST:
+                context['formset'] = JobFormSet(self.request.POST, instance=self.object)
+            else:
+                context['formset'] = JobFormSet(instance=self.object)
+            return context
+
     def form_valid(self, form):
         context = self.get_context_data()
         formset = context['formset']
 
         form.instance.maker = self.request.user.profile
-
+        
         if formset.is_valid():
             self.object = form.save()
             formset.instance = self.object
             formset.save()
 
             return redirect('commissions:commission_detail', pk=self.object.pk)
-        
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
@@ -121,30 +128,20 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CommissionForm
     template_name = "commissions/commissions_update.html"    
 
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['formset'] = JobFormSet(self.request.POST, instance=self.object)
-        else:
-            context['formset'] = JobFormSet(instance=self.object)
-        return context
-
     def form_valid(self, form):
-        context = self.get_context_data()
-        formset = context['formset']
+        response = super().form_valid(form)
 
-        form.instance.maker = self.object.maker
+        commission = self.object
+        jobs = commission.jobs.all()
 
-        if formset.is_valid():
-            self.object = form.save()
-            formset.save()
-
-            jobs = self.object.jobs.all()
-            if jobs.exists() and all(job.status == 'Full' for job in jobs):
-                self.object.status = 'Full'
-                self.object.save()
-
-            return redirect('commissions:commission_detail', pk=self.object.pk)
+        if all(job.status == 'Full' for job in jobs):
+            commission.status = 'Full'
         else:
-            return self.render_to_response(self.get_context_data(form=form))    
+            commission.status = 'Open'
+
+        commission.save()
+
+        return response
+
+    def get_success_url(self):
+        return reverse('commissions:commission_detail', kwargs={'pk': self.object.pk})
