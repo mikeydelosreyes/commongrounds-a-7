@@ -60,7 +60,14 @@ class ProjectDetailView(DetailView):
                 Favorite.objects.create(project=project, profile=profile)
 
         
-          
+        if 'submit_rating' in request.POST:
+            rating = ProjectRatingForm(request.POST)
+            if rating.is_valid():
+                if project.ratings.filter(profile=profile).exists():
+                    project.ratings.filter(profile=profile).update(score=rating.cleaned_data['score'])
+                else:
+                    ProjectRating.objects.create(profile=profile, project=project, score=rating.cleaned_data['score'])
+            
        
 
 class ProjectCreateView(CreateView):
