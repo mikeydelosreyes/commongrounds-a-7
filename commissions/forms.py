@@ -7,28 +7,22 @@ from .models import *
 class CommissionForm(forms.ModelForm):
     class Meta:
         model = Commission
-        fields = ["title", "description",
-                  "type", "status",
-                  "people_required",]
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if 'maker' in self.fields:
-            self.fields['maker'].disabled = True
+        fields = ['title', 'description', 'type', 'people_required', 'status']
+        exclude = ['maker']
 
 
-JobFormSet = inlineformset_factory(
-    Commission,
-    Job,
-    fields=['role', 'manpower_required', 'status'], 
-    extra=1,
-    can_delete=True
-)
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['role', 'manpower_required', 'status']
+
+JobFormSet = inlineformset_factory(Commission, 
+                                   Job, 
+                                   fields=['role', 'manpower_required', 'status',],
+                                   extra=2,
+                                   can_delete=True)
 
 class JobApplicationForm(forms.ModelForm):
-    job_pk = forms.IntegerField(widget=forms.HiddenInput())
-
     class Meta:
         model = JobApplication
-        fields = ['job']
+        fields = []
