@@ -31,6 +31,7 @@ class ProjectListView(ListView):
         return context
 
 
+
 class ProjectDetailView(DetailView):
     model = Project
     template_name = 'diyprojects/project_detail.html'
@@ -39,7 +40,7 @@ class ProjectDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         project = self.get_object()
         context['favorites'] = project.favorites.count()
-        average_score = project.ratings.aggregate(Avg('score'))
+        average_score = project.ratings.aggregate(Avg('score'))['score__avg']
         context['average_score'] = average_score
         context['rating_form'] = ProjectRatingForm()
         context['review_form'] = ProjectReviewForm()
@@ -57,7 +58,9 @@ class ProjectDetailView(DetailView):
                 Favorite.objects.filter(project=project, profile=profile).delete()
             else:
                 Favorite.objects.create(project=project, profile=profile)
-            
+
+        
+          
        
 
 class ProjectCreateView(CreateView):
