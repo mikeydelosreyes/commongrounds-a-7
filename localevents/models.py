@@ -26,7 +26,7 @@ class Event(models.Model):
     category = models.ForeignKey(EventType, on_delete=models.SET_NULL,
                                   related_name='events', null=True)
     organizer = models.ManyToManyField(Profile, null=True)
-    event_image = models.ImageField()
+    event_image = models.ImageField(upload_to='images/', null=False)
     description = models.TextField()
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
@@ -69,4 +69,4 @@ class EventSignup(models.Model):
                                   related_name='events', null=True)
     user_registrant = models.ForeignKey(Profile, on_delete=models.SET_NULL,
                                   related_name='user_registrants', null=True)
-    new_registrant = models.CharField(max_length=255)
+    new_registrant = models.CharField(max_length=255, null=True)
