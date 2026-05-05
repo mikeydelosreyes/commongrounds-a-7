@@ -42,8 +42,20 @@ class ProjectDetailView(DetailView):
         average_score = project.ratings.aggregate(Avg('score'))
         context['average_score'] = average_score
         return context
-            
     
+    def post(self, request, *arg, **kwaargs):
+        project =  self.get_object()
+        profile = request.user.profile
+
+        if 'check_favortie' in request.POST:
+            favorite = Favorite.objects.filter(project = project, profile = profile).exists()
+            
+            if favorite:
+                Favorite.objects.filter(project=project, profile=profile).delete()
+            else:
+                Favorite.objects.create(project=project, profile=profile)
+            
+       
 
 class ProjectCreateView(CreateView):
     model = Project
