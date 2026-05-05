@@ -37,8 +37,8 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        project = self.get_object
-        context['favorites'] = project.favorties.count()
+        project = self.get_object()
+        context['favorites'] = project.favorites.count()
         average_score = project.ratings.aggregate(Avg('score'))
         context['average_score'] = average_score
         return context
