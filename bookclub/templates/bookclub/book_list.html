@@ -4,7 +4,7 @@
 {% block header %}<h1>Book List</h1>{% endblock %}
 {% block content %}
     <ul>
-        {% for book in book_list %}
+        {% for book in all_books %}
             <li><a href ="{{ book.get_absolute_url }}">
             {{ book.title }} - {{ book.publication_year }}</a></li>
         {% endfor %}

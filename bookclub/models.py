@@ -57,9 +57,7 @@ class BookReview(models.Model):
         blank=True,
         related_name="reviewer"
     )
-    AnonReviewer = models.TextField(
-        related_name="reviewer"
-    )
+    AnonReviewer = models.TextField()
     bookreview_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
@@ -92,7 +90,7 @@ class Bookmark(models.Model):
 class Borrow(models.Model):
     borrow_book = models.ForeignKey(
         Book, 
-        on_delte=models.CASCADE,
+        on_delete=models.CASCADE,
         related_name="borrowed_book"    
     )
     borrower = models.ForeignKey(
@@ -103,7 +101,7 @@ class Borrow(models.Model):
         related_name="borrower"
     )
     book_name = models.CharField()
-    bookmark_date = models.DateField(null=False,
+    book_borrowdate = models.DateField(null=False,
                                      auto_now_add=True)
     borrow_returndate = models.DateField()
 

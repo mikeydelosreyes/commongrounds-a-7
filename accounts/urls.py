@@ -1,10 +1,9 @@
-from django.urls import *
-from .views import *
+from django.urls import path
 
-urlpatterns = [
-
-    path('<str:name>', ProfileUpdateView.as_view(), name="profile_update"),
-]
-
+from .views import permission_denied, ProfileUpdateView, seller_dashboard
 
 app_name = "accounts"
+
+urlpatterns = [
+    path("<str:username>/", ProfileUpdateView.as_view(), name="profile_update"),
+]

@@ -15,7 +15,7 @@
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
     </ul>
 
-    <a href="{% url 'ledger:recipe_add_image' pk=recipe.pk %}">
+    <a href="{% url 'bookclub:book_borrow' pk=recipe.pk %}">
                 <button type="button">Add BookMark</button>
     </a>  <br>
 

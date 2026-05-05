@@ -3,17 +3,20 @@ from .models import Book, BookReview, Bookmark, Borrow
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from accounts.models import Profile
+from accounts.mixins import RoleRequiredMixin
+from accounts.decorators import role_required
 
 
 def book_detail(request, id):
 
     Book = Book.objects.get(pk=id)
 
-    return render(request, 'ledger/recipe_detail.html', {
+    return render(request, 'bookclub/book_detail.html', {
         "book": Book,
     })
 
@@ -29,7 +32,7 @@ class BookListView(ListView):
 
         if user.is_authenticated:
             
-            books_contributed = Book.objects
+            books_contributed = Book.objects.all()
 
 
             books_bookmarked = Book.objects.filter(
@@ -71,7 +74,7 @@ The list of book reviews should be shown.
 
 class BookDetailView(DetailView):
     model = Book
-    template_name = "bookclub/books_detail.html"
+    template_name = "bookclub/book_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -88,13 +91,19 @@ class BookDetailView(DetailView):
 
 
 
-class BookCreateView():
+class BookCreateView(RoleRequiredMixin(), CreateView):
     model = Book
     template_name = "bookclub/book_create.html"
+    fields = '__all__'
 
 
-class BookUpdateView():
+class BookUpdateView(RoleRequiredMixin(), UpdateView):
     model = Book
+    template_name = "bookclub/book_update.html"
+    fields = '__all__'
+
 
 class BookBorrowView():
     model = Book
+    template_name = "bookclub/book_borrow.html"
+

@@ -11,14 +11,9 @@ class BookReviewForm(forms.ModelForm):
 class BookBorrowForm(forms.ModelForm):
     class Meta:
         model = Borrow
-        fields = ["bookreview_title", "bookreview_comment"]
+        fields = ["book_name", "book_borrowdate", "borrow_returndate"]
 
 class BookContributeForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ["bookreview_title", "bookreview_comment"]
-
-class BookFormFactory(forms.ModelForm):
-    class Meta:
-        model = BookReview
-        fields = ["bookreview_title", "bookreview_comment"]
+        fields = ["title", "genre", "author"]
