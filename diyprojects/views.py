@@ -64,13 +64,21 @@ class ProjectDetailView(DetailView):
             rating = ProjectRatingForm(request.POST)
             if rating.is_valid():
                 if project.ratings.filter(profile=profile).exists():
-                    project.ratings.filter(profile=profile).update(score=rating.cleaned_data['score'])
+                    project.ratings.filter(profile=profile).update(score = rating.cleaned_data['score'])
                 else:
-                    ProjectRating.objects.create(profile=profile, project=project, score=rating.cleaned_data['score'])
-            else:
-                return self.render_to_response(
-                    self.get_context_data(rating_form=rating)
-                )
+                    ProjectRating.objects.create(profile=profile, project=project, score = rating.cleaned_data['score'])
+                return redirect(self.get_success_url())
+
+        if 'submit_review' is request.POST:
+            review = ProjectRatingForm(request.POST)
+            if review.is_valid():
+                if project.review.filter(reviewer=profile).exists:
+                    project.review.filter(reviewer=profile).update(comment = review.cleaned_data['comment'],
+                                                                   image = review.cleaned_data.get('image'))
+                else:
+                    ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
+                                                                                    image = review.cleaned_data.get('image'))
+                return redirect(self.get_success_url())
        
 
 class ProjectCreateView(CreateView):
