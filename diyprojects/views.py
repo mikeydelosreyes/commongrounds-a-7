@@ -41,6 +41,9 @@ class ProjectDetailView(DetailView):
         context['favorites'] = project.favorites.count()
         average_score = project.ratings.aggregate(Avg('score'))
         context['average_score'] = average_score
+        context['rating_form'] = ProjectRatingForm()
+        context['review_form'] = ProjectReviewForm()
+        context['reviews'] = project.reviews.all()
         return context
     
     def post(self, request, *arg, **kwaargs):
