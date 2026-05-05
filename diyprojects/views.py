@@ -67,7 +67,10 @@ class ProjectDetailView(DetailView):
                     project.ratings.filter(profile=profile).update(score=rating.cleaned_data['score'])
                 else:
                     ProjectRating.objects.create(profile=profile, project=project, score=rating.cleaned_data['score'])
-            
+            else:
+                return self.render_to_response(
+                    self.get_context_data(rating_form=rating)
+                )
        
 
 class ProjectCreateView(CreateView):
