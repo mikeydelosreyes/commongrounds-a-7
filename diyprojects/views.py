@@ -2,6 +2,9 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import (LoginRequiredMixin, 
+                                        UserPassesTestMixin)
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
@@ -11,15 +14,25 @@ class ProjectListView(ListView):
     model = Project
     template_name = 'diyprojects/project_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
+        queryset = Project.objects.all()
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            queryset = queryset.filter(
+                Q(creator=profile) |
+                Q(favorites__profile=profile) |
+                Q(reviews__reviewer=profile)
+            )
+        return queryset
 
-        return context
+    
 
 
 class ProjectDetailView(DetailView):
     model = Project
     template_name = 'diyprojects/project_detail.html'
+
+    
 
 class ProjectCreateView(CreateView):
     model = Project
