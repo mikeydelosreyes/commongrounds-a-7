@@ -25,7 +25,10 @@ class ProjectListView(ListView):
             )
         return queryset
 
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['projects'] = Project.objects.all().distinct()
+        return context
 
 
 class ProjectDetailView(DetailView):
