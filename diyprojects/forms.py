@@ -6,11 +6,6 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['title', 'category', 'description', 'materials','steps']
 
-class ProjectFavoriteForm(forms.ModelForm):
-    class Meta:
-        model = Favorite
-        fields = ['project_status']
-
 class ProjectReviewForm(forms.ModelForm):
     class Meta:
         model = ProjectReview

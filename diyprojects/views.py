@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import (LoginRequiredMixin, 
                                         UserPassesTestMixin)
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
@@ -35,6 +35,14 @@ class ProjectDetailView(DetailView):
     model = Project
     template_name = 'diyprojects/project_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = self.get_object
+        context['favorites'] = project.favorties.count()
+        average_score = project.ratings.aggregate(Avg('score'))
+        context['average_score'] = average_score
+        return context
+            
     
 
 class ProjectCreateView(CreateView):
