@@ -1,4 +1,5 @@
 from .models import Book, BookReview, Bookmark, Borrow
+from .forms import *
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
@@ -91,19 +92,23 @@ class BookDetailView(DetailView):
 
 
 
-class BookCreateView(RoleRequiredMixin(), CreateView):
+class BookCreateView(LoginRequiredMixin,RoleRequiredMixin(), CreateView):
+    role_required="Book Contributer"
     model = Book
+    form_class = BookContributeForm
     template_name = "bookclub/book_create.html"
     fields = '__all__'
 
 
-class BookUpdateView(RoleRequiredMixin(), UpdateView):
+class BookUpdateView(LoginRequiredMixin,RoleRequiredMixin(), UpdateView):
+    role_required="Book Contributer"
     model = Book
-    template_name = "bookclub/book_update.html"
+    form_class = BookUpdateForm
+    template_name = "bookclub/book_u,pdate.html"
     fields = '__all__'
 
 
 class BookBorrowView():
-    model = Book
+    model = Borrow
     template_name = "bookclub/book_borrow.html"
 
