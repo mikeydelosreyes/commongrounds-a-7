@@ -19,7 +19,6 @@
     {% for job in jobs %}
     <h4>{{ job.role }}</h4>
     <p>Required: {{ job.manpower_required }}</p>
-    <p> {{ accepted_count }}</p>
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="job_id" value="{{ job.id }}">
