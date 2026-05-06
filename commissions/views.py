@@ -53,9 +53,10 @@ class CommissionDetailView(DetailView):
 
         jobs = commission.jobs.all()
         total_manpower = sum(job.manpower_required for job in jobs)
-        accepted = sum(job.applications.filter(status='Accepted').count() for job in jobs ) 
+        accepted = sum(job.applications.filter(status='2_ACPT').count() for job in jobs) 
 
         open_manpower = total_manpower - accepted
+        
         ctx['jobs'] = jobs
         ctx['total_manpower'] = total_manpower
         ctx['open_manpower'] = max(0, open_manpower) 
@@ -64,10 +65,10 @@ class CommissionDetailView(DetailView):
             ctx['current_profile'] = self.request.user.profile
             ctx['job_apply_form'] = JobApplicationForm()
             
-        job_accepted = {}
         for job in jobs:
-            job_accepted[job.pk] = job.applications.filter(status='Accepted').count()
-        ctx['job_accepted'] = job_accepted
+            job.accepted_count = job.applications.filter(status='2_ACPT').count()
+
+        ctx['jobs'] = jobs
 
         return ctx  
     
@@ -84,7 +85,8 @@ class CommissionDetailView(DetailView):
         if JobApplication.objects.filter(job=job, applicant=profile).exists():
             return redirect('commissions:commission_detail', pk=self.object.pk)
 
-        accepted_count = job.applications.filter(status='Accepted').count()
+        accepted_count = job.applications.filter(status='2_ACPT').count()
+
         if accepted_count >= job.manpower_required:
             return redirect('commissions:commission_detail', pk=self.object.pk)
 
@@ -134,10 +136,10 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
         commission = self.object
         jobs = commission.jobs.all()
 
-        if all(job.status == 'Full' for job in jobs):
-            commission.status = 'Full'
-        else:
+        if all(job.status == '2_FULL' for job in jobs):
             commission.status = 'Open'
+        else:
+            commission.status = 'Full'
 
         commission.save()
 
