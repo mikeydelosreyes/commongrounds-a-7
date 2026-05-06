@@ -14,7 +14,7 @@ from .forms import *
 class ProjectListView(ListView):
     model = Project
     template_name = 'diyprojects/project_list.html'
-    
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -34,7 +34,7 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        project = self.get_object()
+        project = self.object
         context['favorites'] = project.favorites.count()
         average_score = project.ratings.aggregate(Avg('score'))['score__avg']
         context['average_score'] = average_score
