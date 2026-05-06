@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         UserPassesTestMixin)
 from django.db.models import Q, Avg
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from .models import *
 from .forms import *
 
@@ -23,7 +24,7 @@ class ProjectListView(ListView):
                 Q(favorites__profile=profile) |
                 Q(reviews__reviewer=profile)
             )
-        return queryset
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -47,17 +48,18 @@ class ProjectDetailView(DetailView):
         context['reviews'] = project.reviews.all()
         return context
     
-    def post(self, request, *arg, **kwaargs):
+    def post(self, request, *args, **kwargs):
         project =  self.get_object()
         profile = request.user.profile
 
-        if 'check_favortie' in request.POST:
+        if 'check_favorite' in request.POST:
             favorite = Favorite.objects.filter(project = project, profile = profile).exists()
             
             if favorite:
                 Favorite.objects.filter(project=project, profile=profile).delete()
             else:
-                Favorite.objects.create(project=project, profile=profile)
+                Favorite.objects.create(project=project, profile=profile)                
+            return redirect(self.get_success_url())
 
         
         if 'submit_rating' in request.POST:
@@ -69,17 +71,19 @@ class ProjectDetailView(DetailView):
                     ProjectRating.objects.create(profile=profile, project=project, score = rating.cleaned_data['score'])
                 return redirect(self.get_success_url())
 
-        if 'submit_review' is request.POST:
-            review = ProjectRatingForm(request.POST)
+        if 'submit_review' in request.POST:
+            review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                if project.review.filter(reviewer=profile).exists:
-                    project.review.filter(reviewer=profile).update(comment = review.cleaned_data['comment'],
+                if project.reviews.filter(reviewer=profile).exists():
+                    project.reviews.filter(reviewer=profile).update(comment = review.cleaned_data['comment'],
                                                                    image = review.cleaned_data.get('image'))
                 else:
                     ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
                                                                                     image = review.cleaned_data.get('image'))
                 return redirect(self.get_success_url())
-       
+            
+    def get_success_url(self):
+        return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
 
 class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
