@@ -19,11 +19,15 @@
     {% for job in jobs %}
     <h4>{{ job.role }}</h4>
     <p>Required: {{ job.manpower_required }}</p>
-
+    <p> {{ accepted_count }}</p>
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="job_id" value="{{ job.id }}">
-        <button>Apply to Job</button>
+            {% if job.accepted_count >= job.manpower_required %} 
+            <button disabled>Apply to Job</button>
+            {% else %}
+            <button>Apply to Job</button>
+            {% endif %}
     </form>
     {% endfor %}
 
