@@ -18,7 +18,7 @@
     </ul>
         <form method="POST">
             {% csrf_token %}
-            <button type="submit" class="btn">
+            <button type="submit" name="action" value="toggle_bookmark" class="btn">
                 {% if is_bookmarked %}
                     Un-Bookmark
                 {% else %}
@@ -26,6 +26,21 @@
                 {% endif %}
             </button>
         </form>
+
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="review_content" placeholder="Write your review..."></textarea>
+            <button type="submit" name="action" value="submit_review">Post Review</button>
+        </form>
+
+    <h2>REVIEWS</h2>
+
+    Your Review:
+    <h2> Profile: {{ reviewer }}</h2>
+    <div> {{ review }}</div>
+
+
+
     <a href="{% url 'bookclub:book_borrow' pk=book.pk %}">
                 <button type="button">Borrow Book</button>
     </a>  <br>

@@ -86,38 +86,57 @@ class BookDetailView(DetailView):
         user=self.request.user
         book = self.get_object()
 
-
+        review=BookReview.objects.filter(bookreview_book=book, 
+                                  UserReviewer=Profile.objects.get(user=user)).exists()
+        
 
         if user.is_authenticated:
-            context["reviewer"] = BookReview.objects.filter(
-            bookreview_book=book)
+            context["reviewer"] = self.request.user.profile.name
+            if review:
+                context["review"] = BookReview.objects.get(
+                                        bookreview_book=book, 
+                                        UserReviewer=
+                                        Profile.objects.get(user=user)).bookreview_comment
             context["is_bookmarked"] = book.bookmarked_book.filter(
                 bookmark_profile=user.profile
             ).exists()
             
         else:
             context["is_bookmarked"] = False
-            BookReview.AnonReviewer
+            context["reviewer"]=BookReview.AnonReviewer
 
         context["bookmark_count"] = book.bookmarked_book.count()
         
     
         return context
     def post(self, request, *args, **kwargs):
+
         book = self.get_object()
         profile, created = Profile.objects.get_or_create(user=self.request.user)
         bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
         bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
+        action = request.POST.get('action')
 
-
-        if not request.user.is_authenticated:
-            return redirect('login')
-        elif request.user.is_authenticated:
+        if action=='toggle_bookmark':
+            if not request.user.is_authenticated:
+                return redirect('login')
+            
             if  bookmark.exists():
                 bookmark.delete()
             else:
                 bookmark.create(bookmark_profile=profile, bookmark_book=book)
 
+        if action=='submit_review':
+            content = request.POST.get('review_content')
+
+            if not request.user.is_authenticated:
+                UserReviewer = ""
+            if content:
+                BookReview.objects.create(
+                    UserReviewer=profile, 
+                    bookreview_book=book, 
+                    bookreview_comment=content
+                )
         
         return redirect('bookclub:book_detail', pk=book.pk)
 
