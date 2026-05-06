@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from accounts.models import *
 from datetime import datetime
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class ProjectCategory(models.Model):
@@ -67,4 +68,4 @@ class ProjectRating(models.Model):
                                 related_name='ratings')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                 related_name='ratings') 
-    score = models.IntegerField(max=10, min=1)
+    score = models.IntegerField(validators = [MinValueValidator(1), MaxValueValidator(10)])
