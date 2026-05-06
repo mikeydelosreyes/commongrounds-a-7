@@ -17,7 +17,7 @@
     <h3>Average Score: {{ average_score }}</h3>
 
     {% if request.user.is_authenticated %}
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if is_favorited %}
                 <button type="submit" name="check_favorite">Unfavorite</button>
@@ -27,14 +27,14 @@
         </form>
 
         <h3>Rate this Project</h3>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ rating_form.as_p }}
             <button type="submit" name="submit_rating">Save Rating</button>
         </form>
 
         <h3>Leave a Review</h3>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ review_form.as_p }}
             <button type="submit" name="submit_review">Save Review</button>
