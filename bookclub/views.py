@@ -22,6 +22,9 @@ def book_detail(request, id):
     })
 
 
+
+
+
 class BookListView(ListView):
     model = Book
     template_name = "bookclub/book_list.html"
@@ -84,23 +87,24 @@ class BookDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user=self.request.user
+        profile  = Profile.objects.get(user=user)
         book = self.get_object()
 
         review=BookReview.objects.filter(bookreview_book=book, 
-                                  UserReviewer=Profile.objects.get(user=user)).exists()
-        
+                                  UserReviewer=profile).exists()
 
         if user.is_authenticated:
             context["reviewer"] = self.request.user.profile.name
+            
+
+            
             if review:
                 context["review"] = BookReview.objects.get(
                                         bookreview_book=book, 
-                                        UserReviewer=
-                                        Profile.objects.get(user=user)).bookreview_comment
+                                        UserReviewer=profile).bookreview_comment
             context["is_bookmarked"] = book.bookmarked_book.filter(
                 bookmark_profile=user.profile
-            ).exists()
-            
+            ).exists() 
         else:
             context["is_bookmarked"] = False
             context["reviewer"]=BookReview.AnonReviewer
@@ -116,6 +120,7 @@ class BookDetailView(DetailView):
         bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
         bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
         action = request.POST.get('action')
+
 
         if action=='toggle_bookmark':
             if not request.user.is_authenticated:
@@ -137,6 +142,9 @@ class BookDetailView(DetailView):
                     bookreview_book=book, 
                     bookreview_comment=content
                 )
+        
+        
+            
         
         return redirect('bookclub:book_detail', pk=book.pk)
 

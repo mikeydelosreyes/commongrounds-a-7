@@ -1,5 +1,0 @@
-[{"id":1,"model":"bookclub.club","name":"Comedy|Drama|Romance","description":"leo rhoncus sed vestibulum sit amet cursus id turpis integer aliquet massa id lobortis convallis tortor risus dapibus augue"},
-{"id":2,"model":"bookclub.club","name":"Comedy","description":"accumsan tortor quis turpis sed ante vivamus tortor duis mattis egestas metus aenean fermentum donec"},
-{"id":3,"model":"bookclub.club","name":"Drama|Fantasy|Musical|Romance","description":"phasellus sit amet erat nulla tempus vivamus in felis eu sapien cursus vestibulum proin eu mi nulla ac enim in"},
-{"id":4,"model":"bookclub.club","name":"Drama","description":"odio cras mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices enim lorem ipsum dolor sit amet"},
-{"id":5,"model":"bookclub.club","name":"Action|Adventure|Comedy|Fantasy|Horror|Thriller","description":"nisl duis ac nibh fusce lacus purus aliquet at feugiat non pretium quis lectus"}]

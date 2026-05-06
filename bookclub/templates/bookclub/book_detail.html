@@ -14,8 +14,11 @@
         <li>Available to Borrow: {{ book.borrow_availability}}</li>
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
-
+        {% if user.profile.role == "Book Contributer" %}
+        <li > <a href="{% url 'bookclub:book_update' pk=book.pk %}" > edit </a> </li >
+        {% endif %}   
     </ul>
+
         <form method="POST">
             {% csrf_token %}
             <button type="submit" name="action" value="toggle_bookmark" class="btn">
@@ -32,6 +35,8 @@
             <textarea name="review_content" placeholder="Write your review..."></textarea>
             <button type="submit" name="action" value="submit_review">Post Review</button>
         </form>
+
+        
 
     <h2>REVIEWS</h2>
 
