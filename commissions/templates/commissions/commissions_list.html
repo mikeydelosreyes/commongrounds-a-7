@@ -19,9 +19,8 @@
                     {{ commission.title }} - {{ commission.status }} - {{ commission.created_on|date:"Y-m-d" }}
                 </a></li>
             {% endfor %}
-        </ul>
-    {% endif %}
-      <br>
+        </ul>   
+        <br>
         <ul><p>Other commissions</p>
             {% for commission in other_commissions %}
                 <li><a href ="{{ commission.get_absolute_url }}">
@@ -29,5 +28,13 @@
                 </a></li>
             {% endfor %}
         </ul>
+    {% else %}
+            <ul><p>All commissions</p>
+            {% for commission in all_commissions %}
+                <li><a href ="{{ commission.get_absolute_url }}">
+                    {{ commission.title }} - {{ commission.status }} - {{ commission.created_on|date:"Y-m-d" }}
+                </a></li>
+            {% endfor %}
+    {% endif %}
 
 {% endblock %}
