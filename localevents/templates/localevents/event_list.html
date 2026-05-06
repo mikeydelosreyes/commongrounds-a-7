@@ -4,16 +4,22 @@
 {% block header %}<h1>Event List</h1>{% endblock %}
 {% block content %}
     <ul>
-        {% for event in event_list %}
-            #user's events
-            <li><a href ="{{ event.get_absolute_url }}">
-            {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
-        {% endfor %}
-        {% for event in event_list %}
-            #all other events
-            <li><a href ="{{ event.get_absolute_url }}">
-            {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
-        {% endfor %}
+        {% if user.is_authenticated %}
+            {% for event in created_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+            {% for event in other_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+        {% else %}
+            {% for event in all_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+        {% endif %}
     </ul>
-    <!--signup link here--> 
+    <br>
+    <h3><a href="{% url 'localevents:event_create' %}">Create New Event</a></h3>
 {% endblock %}

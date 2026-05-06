@@ -129,7 +129,7 @@ BASE_DIR/'static',
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL="/localevents/events" #PLACEHOLDER CODE
-LOGOUT_REDIRECT_URL="/accounts/logout"
+LOGOUT_REDIRECT_URL="/accounts/login"
 
 MEDIA_ROOT = BASE_DIR/'media'
 MEDIA_URL = '/media/'

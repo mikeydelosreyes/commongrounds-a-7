@@ -9,9 +9,19 @@ from .forms import *
 from .models import *
 
 
-class EventListView(ListView): #fix the order
+class EventListView(ListView):
     model = Event
     template_name = "localevents/event_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not self.request.user.is_authenticated:
+            context["all_events"] = Event.objects.all()
+        else:
+            context["created_events"] = Event.objects.filter(organizer__user=self.request.user)
+            #context["signedup_events"] = Event.objects.filter(organizer__user=self.request.user)
+            context["other_events"] = Event.objects.exclude(organizer__user=self.request.user)
+        return context
     
 
 class EventDetailView(DetailView): #fix the button
@@ -29,7 +39,7 @@ class EventCreateView(LoginRequiredMixin, CreateView):
         #FIX LATER: https://stackoverflow.com/questions/17872441/django-createview-gives-an-error-needs-to-have-a-value-for-field-before-t
         #Daniel Roseman
         form.save()
-        form.instance.organizer.add(Profile.objects.get(user=self.request.user))
+        form.instance.organizer = Profile.objects.get(user=self.request.user)
         return super().form_valid(form)
     
     
