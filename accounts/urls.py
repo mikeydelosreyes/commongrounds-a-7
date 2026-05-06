@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import permission_denied, ProfileUpdateView, seller_dashboard
+from .views import ProfileUpdateView
 
 app_name = "accounts"
 

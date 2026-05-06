@@ -122,5 +122,5 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-LOGIN_REDIRECT_URL="/localevents/events" #PLACEHOLDER CODE
-LOGOUT_REDIRECT_URL="/accounts/logout"
+LOGIN_REDIRECT_URL="/accounts/" #PLACEHOLDER CODE
+LOGOUT_REDIRECT_URL="/accounts/login"

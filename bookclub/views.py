@@ -29,19 +29,23 @@ class BookListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user=self.request.user
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
 
-        if user.is_authenticated:
+        
+
+        if profile.user.is_authenticated:
             
             books_contributed = Book.objects.all()
 
 
+
+
             books_bookmarked = Book.objects.filter(
-                bookmarked_books__bookmark_profile=user
+                bookmarked_book__bookmark_profile=profile
             ).distinct()
 
             books_reviewed = Book.objects.filter(
-                reviewed_books__UserReviewer=user
+                reviewed_books__UserReviewer=profile
             ).distinct()
 
             grouped_books = (
@@ -53,7 +57,7 @@ class BookListView(ListView):
             )
 
             context["contributed_books"] = books_contributed
-            context["bookmarked_books"] = books_bookmarked
+            context["bookmarked_book"] = books_bookmarked
             context["reviewed_books"] = books_reviewed
             context["all_books"] = all_books
 
@@ -64,7 +68,6 @@ class BookListView(ListView):
 
 
 """
-There should be a display whether the book is available to be borrowed.
 There should be a button that allows you to bookmark the book. The number of bookmarks on the book should also be displayed.
 There should be a Form that is rendered on this view that allows you to review the book. When the user is logged in, the review is automatically assigned to the Profile with the associated display name. Else, the display name should be “Anonymous”.
 There should be a button to borrow a book that will lead to the borrow view.
@@ -75,46 +78,49 @@ The list of book reviews should be shown.
 
 class BookDetailView(DetailView):
     model = Book
+
     template_name = "bookclub/book_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        book = self.get_object()
         user=self.request.user
+        book = self.get_object()
+
+
 
         if user.is_authenticated:
             context["reviewer"] = BookReview.objects.filter(
-            bookreview_book=book
-        )
-        else: BookReview.AnonReviewer
+            bookreview_book=book)
+            context["is_bookmarked"] = book.bookmarked_book.filter(
+                bookmark_profile=user.profile
+            ).exists()
+            
+        else:
+            context["is_bookmarked"] = False
+            BookReview.AnonReviewer
+
+        context["bookmark_count"] = book.bookmarked_book.count()
+        
     
         return context
     def post(self, request, *args, **kwargs):
         book = self.get_object()
-            
-        if request.user in book.bookmarked_book.all():
-            book.bookmarked_book.remove(request.user)
-        else:
-            book.bookmarked_book.add(request.user)
-    def toggle_bookmark(request, item_id):
-    if request.user.is_authenticated:
-        # Standard logic for logged-in users
-        # Bookmark.objects.get_or_create(user=request.user, item_id=item_id)
-        pass
-    else:
-        # Session logic for anonymous users
-        bookmarks = request.session.get('bookmarks', [])
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
+        bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
+
+
+        if not request.user.is_authenticated:
+            return redirect('login')
+        elif request.user.is_authenticated:
+            if  bookmark.exists():
+                bookmark.delete()
+            else:
+                bookmark.create(bookmark_profile=profile, bookmark_book=book)
+
         
-        if item_id in bookmarks:
-            bookmarks.remove(item_id)
-        else:
-            bookmarks.append(item_id)
-            
-        request.session['bookmarks'] = bookmarks
-        # Critical: Tell Django the session changed
-        request.session.modified = True
-                
-        return redirect('book_detail', pk=book.pk)
+        return redirect('bookclub:book_detail', pk=book.pk)
+
 
 
 

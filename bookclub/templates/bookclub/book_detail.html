@@ -19,7 +19,7 @@
         <form method="POST">
             {% csrf_token %}
             <button type="submit" class="btn">
-                {% if user in book.bookmarked_book.all %}
+                {% if is_bookmarked %}
                     Un-Bookmark
                 {% else %}
                     Bookmark

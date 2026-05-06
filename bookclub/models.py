@@ -74,18 +74,22 @@ class Bookmark(models.Model):
     bookmark_profile = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name="bookmarker"
+        related_name="bookmarker",
+        null=True, blank=True
     )
     bookmark_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
-        related_name="bookmarked_book"
+        related_name="bookmarked_book",
+        null=True, blank=True
     )
     bookmark_date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'bookmark'
         verbose_name_plural = 'bookmarks'
+
+    
 
 class Borrow(models.Model):
     borrow_book = models.ForeignKey(

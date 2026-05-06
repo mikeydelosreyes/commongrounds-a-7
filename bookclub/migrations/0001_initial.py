@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('bookmark_date', models.DateField(auto_now_add=True)),
-                ('bookmark_book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bookmarked_books', to='bookclub.book')),
+                ('bookmark_book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bookmarked_book', to='bookclub.book')),
                 ('bookmark_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bookmarker', to='accounts.profile')),
             ],
             options={
