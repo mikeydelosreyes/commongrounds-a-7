@@ -15,12 +15,13 @@
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
     </ul>
 
+    </ul>
+    <ul>
+
     <a href="{% url 'bookclub:book_borrow' pk=recipe.pk %}">
                 <button type="button">Add BookMark</button>
     </a>  <br>
 
-    <a href="{% url 'bookclub:recipe_add_image' pk=recipe.pk %}">
-                <button type="button">Add BookMark</button>
-    </a>  <br>
+
 {% endblock %}
 

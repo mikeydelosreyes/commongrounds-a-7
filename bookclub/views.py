@@ -92,7 +92,7 @@ class BookDetailView(DetailView):
 
 
 
-class BookCreateView(LoginRequiredMixin,RoleRequiredMixin(), CreateView):
+class BookCreateView(LoginRequiredMixin,RoleRequiredMixin, CreateView):
     role_required="Book Contributer"
     model = Book
     form_class = BookContributeForm
@@ -100,15 +100,17 @@ class BookCreateView(LoginRequiredMixin,RoleRequiredMixin(), CreateView):
     fields = '__all__'
 
 
-class BookUpdateView(LoginRequiredMixin,RoleRequiredMixin(), UpdateView):
+class BookUpdateView(LoginRequiredMixin,RoleRequiredMixin, UpdateView):
     role_required="Book Contributer"
     model = Book
-    form_class = BookUpdateForm
-    template_name = "bookclub/book_u,pdate.html"
+    form_class = BookContributeForm
+    template_name = "bookclub/book_update.html"
     fields = '__all__'
 
 
-class BookBorrowView():
+class BookBorrowView(CreateView):
     model = Borrow
+    form_class = BookBorrowForm
     template_name = "bookclub/book_borrow.html"
+
 

@@ -28,16 +28,15 @@ class BookAdmin(admin.ModelAdmin):
                  'author',
                  'publication_year',
                  'sypnopsis', 
-                 'publication_year', 
                  'borrow_availability', 
                  'created_on', 
                  'updated_on',
                  ), 
-                 'genre', 
+                 'genre',  
                  'review',
                  'bookmark',
-                 'borrow' 
-
+                 'borrow'
+                 
             ]
         }),
     ]
