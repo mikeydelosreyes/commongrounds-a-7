@@ -41,12 +41,17 @@ class ProjectDetailView(DetailView):
         context['rating_form'] = ProjectRatingForm()
         context['review_form'] = ProjectReviewForm()
         context['reviews'] = project.reviews.all()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+            context['is_favorited'] = project.favorites.filter(profile=self.request.user.profile).exists()
         return context
     
     def post(self, request, *args, **kwargs):
-        project =  self.get_object()
+        self.object = self.get_object()
+        project = self.object
+
         if not hasattr(request.user, 'profile'):
             return redirect(self.get_success_url())
+        
         profile = request.user.profile
 
         if 'check_favorite' in request.POST:
@@ -88,7 +93,7 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     template_name = "diyprojects/project_create.html"
 
     def test_func(self):
-        return self.request.user.profile.role == "Project Creator"
+        return hasattr(self.request.user, 'profile') and self.request.user.profile.role == "Project Creator"
 
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
@@ -100,7 +105,7 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "diyprojects/project_update.html"
 
     def test_func(self):
-        return self.request.user.profile.role == "Project Creator"
+        return hasattr(self.request.user, 'profile') and self.request.user.profile.role == "Project Creator"
 
     def get_success_url(self):
         return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
