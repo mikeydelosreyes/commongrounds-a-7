@@ -3,7 +3,7 @@
 {% block title %}{{ project.title }}{% endblock %}
 {% block header %}<h1>Project | {{ project.title }}</h1>{% endblock %}
 {% block content %}
-    <h3><a href="{% url 'localevents:event_list' %}">Go back to Projects</a></h3>
+    <h3><a href="{% url 'diyprojects:project_list' %}">Go back to Projects</a></h3>
     <h2>Category: {{ project.category.name }}</h2>
     <ul>
         <li>Description: {{project.description}}</li>
@@ -46,9 +46,9 @@
         {% for review in reviews %}
             <li>
                 {{ review.reviewer }} - {{ review.comment }}
-                {% for review_image in review.image.all %}
-                    <img src="{{ review_image.image.url }}">
-                {% endfor %}
+                {% if review.image %}
+                    <img src="{{ review.image.url }}">
+                {% endif %}     
             </li>
         {% endfor %}
     </ul>

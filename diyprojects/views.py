@@ -45,6 +45,8 @@ class ProjectDetailView(DetailView):
     
     def post(self, request, *args, **kwargs):
         project =  self.get_object()
+        if not hasattr(request.user, 'profile'):
+            return redirect(self.get_success_url())
         profile = request.user.profile
 
         if 'check_favorite' in request.POST:
