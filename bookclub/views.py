@@ -79,7 +79,7 @@ class BookDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        book = self.object
+        book = self.get_object()
         user=self.request.user
 
         if user.is_authenticated:
@@ -87,8 +87,34 @@ class BookDetailView(DetailView):
             bookreview_book=book
         )
         else: BookReview.AnonReviewer
-            
+    
         return context
+    def post(self, request, *args, **kwargs):
+        book = self.get_object()
+            
+        if request.user in book.bookmarked_book.all():
+            book.bookmarked_book.remove(request.user)
+        else:
+            book.bookmarked_book.add(request.user)
+    def toggle_bookmark(request, item_id):
+    if request.user.is_authenticated:
+        # Standard logic for logged-in users
+        # Bookmark.objects.get_or_create(user=request.user, item_id=item_id)
+        pass
+    else:
+        # Session logic for anonymous users
+        bookmarks = request.session.get('bookmarks', [])
+        
+        if item_id in bookmarks:
+            bookmarks.remove(item_id)
+        else:
+            bookmarks.append(item_id)
+            
+        request.session['bookmarks'] = bookmarks
+        # Critical: Tell Django the session changed
+        request.session.modified = True
+                
+        return redirect('book_detail', pk=book.pk)
 
 
 

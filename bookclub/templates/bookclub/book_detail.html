@@ -13,13 +13,21 @@
         <li>Created: {{ book.created_on|date:"Y-m-d"}}</li>
         <li>Available to Borrow: {{ book.borrow_availability}}</li>
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
-    </ul>
+        <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
 
     </ul>
-    <ul>
-
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn">
+                {% if user in book.bookmarked_book.all %}
+                    Un-Bookmark
+                {% else %}
+                    Bookmark
+                {% endif %}
+            </button>
+        </form>
     <a href="{% url 'bookclub:book_borrow' pk=book.pk %}">
-                <button type="button">Add BookMark</button>
+                <button type="button">Borrow Book</button>
     </a>  <br>
 
 

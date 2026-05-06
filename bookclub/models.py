@@ -79,7 +79,7 @@ class Bookmark(models.Model):
     bookmark_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
-        related_name="bookmarked_books"
+        related_name="bookmarked_book"
     )
     bookmark_date = models.DateField(auto_now_add=True)
 
