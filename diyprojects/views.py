@@ -19,11 +19,9 @@ class ProjectListView(ListView):
         queryset = Project.objects.all()
         if self.request.user.is_authenticated:
             profile = self.request.user.profile
-            queryset = queryset.filter(
-                Q(creator=profile) |
-                Q(favorites__profile=profile) |
-                Q(reviews__reviewer=profile)
-            )
+            queryset = queryset.filter( Q(creator=profile) |
+                                        Q(favorites__profile=profile) |
+                                        Q(reviews__reviewer=profile))
         return queryset.distinct()
 
     def get_context_data(self, **kwargs):
@@ -53,7 +51,7 @@ class ProjectDetailView(DetailView):
         profile = request.user.profile
 
         if 'check_favorite' in request.POST:
-            favorite = Favorite.objects.filter(project = project, profile = profile).exists()
+            favorite = Favorite.objects.filter(project=project, profile=profile).exists()
             
             if favorite:
                 Favorite.objects.filter(project=project, profile=profile).delete()
