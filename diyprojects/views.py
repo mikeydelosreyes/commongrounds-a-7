@@ -84,7 +84,7 @@ class ProjectDetailView(DetailView):
 class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
     fields = ['title', 'category', 'description', 'materials', 'steps']
-    template_name = "diyprojects/project_form.html"
+    template_name = "diyprojects/project_create.html"
 
     def test_func(self):
         return self.request.user.profile.role == "Project Creator"
@@ -92,3 +92,14 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
         return super().form_valid(form)
+    
+class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Project
+    fields = ['title', 'category', 'description', 'materials', 'steps']
+    template_name = "diyprojects/project_update.html"
+
+    def test_func(self):
+        return self.request.user.profile.role == "Project Creator"
+
+    def get_success_url(self):
+        return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
