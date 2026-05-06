@@ -15,18 +15,14 @@ class ProjectListView(ListView):
     model = Project
     template_name = 'diyprojects/project_list.html'
 
-    def get_queryset(self):
-        queryset = Project.objects.all()
-        if self.request.user.is_authenticated:
-            profile = self.request.user.profile
-            queryset = queryset.filter( Q(creator=profile) |
-                                        Q(favorites__profile=profile) |
-                                        Q(reviews__reviewer=profile))
-        return queryset.distinct()
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all().distinct()
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            context['created'] = Project.objects.filter(creator=profile)
+            context['favorites'] = Project.objects.filter(favorites__profile=profile)
+            context['reviewed'] = Project.objects.filter(reviews__reviewer=profile)
         return context
 
 
