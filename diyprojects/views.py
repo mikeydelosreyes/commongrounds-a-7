@@ -81,11 +81,14 @@ class ProjectDetailView(DetailView):
                 return redirect(self.get_success_url())
        
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Project
-    form_class = ProjectForm
+    fields = ['title', 'category', 'description', 'materials', 'steps']
+    template_name = "diyprojects/project_form.html"
 
-    def form_invalid(self, form):
-        form.instance.profile = Profile.objects.get(user=self.request.user)
-        return super().form_invalid(form)
-    
+    def test_func(self):
+        return self.request.user.profile.role == "Project Creator"
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user.profile
+        return super().form_valid(form)
