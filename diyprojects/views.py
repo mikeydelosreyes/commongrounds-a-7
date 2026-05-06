@@ -14,6 +14,7 @@ from .forms import *
 class ProjectListView(ListView):
     model = Project
     template_name = 'diyprojects/project_list.html'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
