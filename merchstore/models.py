@@ -23,9 +23,9 @@ class ProductType(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=255)
     product_type = models.ForeignKey(ProductType, on_delete=models.SET_NULL,
-                                     related_name='products', null=True)
+                                     related_name='product_type', null=True)
     owner = models.ForeignKey(Profile, on_delete=models.SET_NULL,
-                                  related_name='products', null=True)
+                                  related_name='owner', null=True)
     product_image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     description = models.TextField()
     price = models.DecimalField(
