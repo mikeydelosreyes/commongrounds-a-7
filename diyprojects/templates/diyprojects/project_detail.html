@@ -13,4 +13,44 @@
         <li>Last updated: {{ project.updated_on|date:"Y-m-d"}}</li>
     </ul>
 
+    <h3>Favorites: {{ favorites }}</h3>
+    <h3>Average Score: {{ average_score }}</h3>
+
+    {% if request.user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {% if is_favorited %}
+                <button type="submit" name="check_favorite">Unfavorite</button>
+            {% else %}
+                <button type="submit" name="check_favorite">Favorite</button>
+            {% endif %}
+        </form>
+
+        <h3>Rate this Project</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ rating_form.as_p }}
+            <button type="submit" name="submit_rating">Save Rating</button>
+        </form>
+
+        <h3>Leave a Review</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit" name="submit_review">Save Review</button>
+        </form>
+    {% endif %}
+
+    <h3>Reviews</h3>
+    <ul>
+        {% for review in reviews %}
+            <li>
+                {{ review.reviewer }} - {{ review.comment }}
+                {% for review_image in review.image.all %}
+                    <img src="{{ review_image.image.url }}">
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+
 {% endblock %}
