@@ -32,5 +32,9 @@
                 {{project.title}} - {{ project.created_on|date:"Y-m-d"}}</a>                
             </li>
         {% endfor %}
+
+        <a href="{% url 'diyprojects:project_create' %}">Create Project</a>
     </ul>
+
+    
 {% endblock %}
