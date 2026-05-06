@@ -19,7 +19,7 @@ class ProjectListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all().distinct()
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
             profile = self.request.user.profile
             context['created'] = Project.objects.filter(creator=profile)
             context['favorites'] = Project.objects.filter(favorites__profile=profile)
