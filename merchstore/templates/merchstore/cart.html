@@ -1,0 +1,22 @@
+{% extends "base_merchstore.html" %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+    <h2>Your Cart</h2>
+
+    {% for owner, cart_view in grouped_transactions.items %}
+        <h3>Seller: {{ owner.username }}</h3>
+        <ul>
+            {% for tx in cart_view %}
+                <li>
+                    {{ tx.product.name }} - {{ tx.get_status_display }}
+                    (Quantity: {{ tx.quantity }})
+                </li>
+            {% endfor %}
+        </ul>
+    {% empty %}
+        <p>No transactions yet.</p>
+    {% endfor %}
+{% endblock %}
+
