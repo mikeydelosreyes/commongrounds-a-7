@@ -61,10 +61,12 @@ class Job(models.Model):
     
     class Meta:
         ordering = ['status', '-manpower_required', 'role']
+        verbose_name = 'job'
+        verbose_name_plural = 'jobs'
 
 class JobApplication(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
-    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="job_applications")
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
     STATUS_CHOICES = {
         "1_PEND" : "Pending",
         "2_ACPT" : "Accepted",
@@ -75,6 +77,8 @@ class JobApplication(models.Model):
     
     class Meta:
         ordering = ['status', '-applied_on']
+        verbose_name = 'job application'
+        verbose_name_plural = 'job applications'
 
     def __str__(self):
         return f"{self.job} - {self.applicant}"
