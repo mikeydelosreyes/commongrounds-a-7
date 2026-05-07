@@ -88,8 +88,8 @@ class ProjectDetailView(DetailView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ['title', 'category', 'description', 'materials', 'steps']
     template_name = "diyprojects/project_form.html"
+    form_class = ProjectForm
 
 
     def form_valid(self, form):
@@ -98,8 +98,8 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
     
 class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
-    fields = ['title', 'category', 'description', 'materials', 'steps']
     template_name = "diyprojects/project_update.html"
+    form_class = ProjectUpdateForm
 
 
     def get_success_url(self):

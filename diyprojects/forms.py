@@ -6,6 +6,11 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['title', 'category', 'description', 'materials','steps']
 
+class ProjectUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['title', 'category', 'description', 'materials', 'steps']
+
 class ProjectReviewForm(forms.ModelForm):
     class Meta:
         model = ProjectReview
