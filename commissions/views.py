@@ -12,6 +12,7 @@ class CommissionListView(ListView):
     model = Commission
     template_name = "commissions/commissions_list.html"
     context_object_name = "all_commissions"
+    
     def get_queryset(self):
         return Commission.objects.annotate(
             status_order=Case(
@@ -160,7 +161,7 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.maker = self.request.user.profile
         
         if formset.is_valid():
-            if not self.object.jobs.exclude(status='Full').exists():
+            if not self.object.jobs.exclude(status='2_FULL').exists():
                 self.object.status = "Full"
             else:
                 self.object.status = "Open"
