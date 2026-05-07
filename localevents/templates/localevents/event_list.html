@@ -9,6 +9,10 @@
                 <li><a href ="{{ event.get_absolute_url }}">
                 {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
             {% endfor %}
+            {% for event in signedup_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
             {% for event in other_events %}
                 <li><a href ="{{ event.get_absolute_url }}">
                 {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>

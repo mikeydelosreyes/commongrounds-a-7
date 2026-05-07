@@ -16,7 +16,13 @@ class EventForm(forms.ModelForm):
             )
         }
 
-class EventSignupForm(forms.ModelForm):
+class NewUserEventSignupForm(forms.ModelForm):
     class Meta:
         model = EventSignup
-        fields = ['event', 'new_registrant',]
+        fields = ['new_registrant',]
+
+
+class RegisteredUserEventSignupForm(forms.ModelForm):
+    class Meta:
+        model = EventSignup
+        fields = []

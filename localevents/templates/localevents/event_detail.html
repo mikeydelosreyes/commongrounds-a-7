@@ -19,5 +19,9 @@
         <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
     </ul>
     <br>
-    event signup button here
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
 {% endblock %}

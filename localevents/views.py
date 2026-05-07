@@ -9,7 +9,7 @@ from .forms import *
 from .models import *
 
 
-class EventListView(ListView):
+class EventListView(ListView): #fix event signups
     model = Event
     template_name = "localevents/event_list.html"
 
@@ -18,8 +18,9 @@ class EventListView(ListView):
         if not self.request.user.is_authenticated:
             context["all_events"] = Event.objects.all()
         else:
+            users_signups = EventSignup.objects.filter(user_registrant__user=self.request.user)
             context["created_events"] = Event.objects.filter(organizer__user=self.request.user)
-            #context["signedup_events"] = Event.objects.filter(organizer__user=self.request.user)
+            context["signedup_events"] = Event.objects.filter() #HOW DO I FIX THIS
             context["other_events"] = Event.objects.exclude(organizer__user=self.request.user)
         return context
     
@@ -27,6 +28,32 @@ class EventListView(ListView):
 class EventDetailView(DetailView): #fix the button
     model = Event
     template_name = "localevents/event_detail.html"
+
+    def get_context_data(self, **kwargs): #change the link
+        context = super().get_context_data(**kwargs)
+        event = Event.objects.get(pk=self.kwargs['pk'])
+        #if event not full
+        if event.event_capacity > EventSignup.objects.filter(event=event).count():
+            if not self.request.user.is_authenticated:
+                #new user signup form
+                form = NewUserEventSignupForm()
+                form.event = Event.objects.get(pk=self.kwargs['pk'])
+                context['form'] = form
+            else:
+                #existing user signup automatic
+                form = RegisteredUserEventSignupForm()
+                form.event = Event.objects.get(pk=self.kwargs['pk'])
+                form.save(commit=False)
+                form.user_registrant = Profile.objects.get(user=self.request.user)
+                context['form'] = form
+        else:
+            #just display nothing
+            pass
+        return context
+    
+
+    def get_success_url(self):
+        return reverse_lazy('localevents:event_list')
 
 
 #FIX LATER: https://stackoverflow.com/questions/18246326/how-do-i-set-user-field-in-form-to-the-currently-logged-in-user
@@ -57,10 +84,10 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
 
 def event_signup_process(request, pk):
     event = Event.objects.get(pk=pk)
-    form = EventSignupForm()
+    form = NewUserEventSignupForm()
 
     if request.method == "POST":
-        form = EventSignupForm(request.POST)
+        form = NewUserEventSignupForm(request.POST)
 
         if form.is_valid():
             event_signup = form.save(commit=False)
@@ -69,7 +96,7 @@ def event_signup_process(request, pk):
             return redirect('localevents:event_detail', pk=event.pk)
         
     else:
-        form = EventSignupForm()
+        form = NewUserEventSignupForm()
 
     return render(request, "localevents/event_signup.html", {
         "event": event,
