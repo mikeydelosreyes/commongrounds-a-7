@@ -71,6 +71,7 @@ class ProjectDetailView(DetailView):
                 else:
                     ProjectRating.objects.create(profile=profile, project=project, score = rating.cleaned_data['score'])
                 return redirect(self.get_success_url())
+            return redirect(self.get_success_url())
 
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
