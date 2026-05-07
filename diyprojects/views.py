@@ -75,13 +75,15 @@ class ProjectDetailView(DetailView):
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                if project.reviews.filter(reviewer=profile).exists():
-                    project.reviews.filter(reviewer=profile).update(comment = review.cleaned_data['comment'],
-                                                                   image = review.cleaned_data.get('image'))
-                else:
-                    ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
-                                                                                    image = review.cleaned_data.get('image'))
-                return redirect(self.get_success_url())
+                get_review = project.reviews.get(reviewer=profile)
+                get_review.comment = review.cleaned_data['comment']
+                if review.cleaned_data.get('image'):
+                    get_review.image = review.cleaned_data['image']
+                get_review.save()
+            else:
+                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
+                                                                                image = review.cleaned_data.get('image'))
+            return redirect(self.get_success_url())
             
     def get_success_url(self):
         return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
