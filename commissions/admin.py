@@ -11,14 +11,14 @@ class CommissionAdmin(admin.ModelAdmin):
 
     search_fields = ('title', )
 
-    list_display = ('title', 'people_required', "created_on")
+    list_display = ('title', 'people_required', "created_on", "status")
 
     list_filter = ('title', 'people_required')
 
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title', 'people_required')
+                ('title', 'people_required', 'status')
             ]
         })
     ]
