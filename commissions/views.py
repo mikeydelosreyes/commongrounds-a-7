@@ -68,7 +68,7 @@ class CommissionDetailView(DetailView):
                         job.status == "1_OPEN"
                         job.save()
             
-        if not jobs.exclude(status='Full').exists():
+        if not jobs.exclude(status='2_FULL').exists() and all_jobs_full:
             if commission.status != 'Full': 
                 commission.status = 'Full' 
                 commission.save() 
@@ -139,7 +139,7 @@ class CommissionCreateView(LoginRequiredMixin, CreateView):
         
             return redirect('commissions:commission_detail', pk=self.object.pk)
         else:
-            return self.render_to_response(self.get_context_data(form=form))
+            return render(self.request, self.template_name, self.get_context_data(form=form))
 
 class CommissionUpdateView(LoginRequiredMixin, UpdateView):
     model = Commission
@@ -171,4 +171,4 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
 
             return redirect('commissions:commission_detail', pk=self.object.pk)
         else:
-            return self.render_to_response(self.get_context_data(form=form))
+            return render(self.request, self.template_name, self.get_context_data(form=form))
