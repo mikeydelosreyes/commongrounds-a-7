@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, ProjectCategory, ProjectRating, ProjectReview, Favorite
+from .models import Project, ProjectCategory, ProjectRating, ProjectReview, Favorite, Profile
 
 
 class ProjectInline(admin.TabularInline):
@@ -40,6 +40,8 @@ class ProjectReviewAdmin(admin.ModelAdmin):
     search_fields = ('project__title',)
 
 
+
+admin.site.register(Profile)
 admin.site.register(ProjectCategory, ProjectCategoryAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectRating, ProjectRatingAdmin)
