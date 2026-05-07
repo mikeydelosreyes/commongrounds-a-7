@@ -48,8 +48,6 @@ class ProjectDetailView(DetailView):
         self.object = self.get_object()
         project = self.object
 
-        if not hasattr(request.user, 'profile'):
-            return redirect(self.get_success_url())
         
         profile = request.user.profile
 
