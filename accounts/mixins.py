@@ -1,15 +1,12 @@
 from django.contrib.auth.mixins import AccessMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.core.exceptions import PermissionDenied
+
 
 
 class RoleRequiredMixin(AccessMixin):
-    """Restrict CBV access to users whose Profile.role matches required_role.
 
-    Usage:
-        class ProductCreateView(RoleRequiredMixin, CreateView):
-            required_role = "Market Seller"
-    """
     required_role = None
 
     def dispatch(self, request, *args, **kwargs):
@@ -17,7 +14,7 @@ class RoleRequiredMixin(AccessMixin):
             return self.handle_no_permission()
         try:
             if request.user.profile.role != self.required_role:
-                return redirect(reverse_lazy("accounts:permission_denied"))
+                raise PermissionDenied("No Requiered Role")
         except AttributeError:
-            return redirect(reverse_lazy("accounts:permission_denied"))
+            raise PermissionDenied("No Required Role")
         return super().dispatch(request, *args, **kwargs)
