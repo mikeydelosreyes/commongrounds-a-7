@@ -10,12 +10,6 @@ class CommissionForm(forms.ModelForm):
         fields = ['title', 'description', 'type', 'people_required', 'status']
         exclude = ['maker']
 
-
-class JobForm(forms.ModelForm):
-    class Meta:
-        model = Job
-        fields = ['role', 'manpower_required', 'status']
-
 JobFormSet = inlineformset_factory(Commission, 
                                    Job, 
                                    fields=['role', 'manpower_required', 'status',],
