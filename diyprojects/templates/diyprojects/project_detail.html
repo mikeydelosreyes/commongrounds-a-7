@@ -49,8 +49,9 @@
         {% for review in reviews %}
             <li>
                 {{ review.reviewer }} - {{ review.comment }}
+                <br>
                 {% if review.image %}
-                    <img src="{{ review.image.url }}">
+                    <img src="{{ review.image.url }}" width="350px">
                 {% endif %}     
             </li>
         {% endfor %}

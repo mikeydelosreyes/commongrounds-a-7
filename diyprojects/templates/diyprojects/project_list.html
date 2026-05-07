@@ -25,7 +25,7 @@
                 {{review.title}} - {{ review.created_on|date:"Y-m-d"}}</a>
             </li>
         {% endfor %}
-        <h3>Project List</h3>
+        <h3>Projects</h3>
         {% for project in projects %}
             <li>                
                 <a href="{{project.get_absolute_url}}">
