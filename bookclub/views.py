@@ -42,7 +42,7 @@ class BookListView(ListView):
 
         if self.request.user.is_authenticated:
             
-            profile=return_profile()
+            profile=return_profile(self.request)
 
             books_contributed = Book.objects.all()
 
@@ -159,15 +159,29 @@ class BookDetailView(DetailView):
 
 
 class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
-    role_name="Book Contributer"
+    role_name="Book Contributor"
     model = Book
     form_class = BookCreateForm
     template_name = "bookclub/book_create.html"
 
+    def form_valid(self, form):
+
+        form.instance.contributor = self.request.user.profile
+
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+
+        context["contributor_name"] = self.request.user.profile.name
+
+        return context
+    
 
 
 class BookUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
-    role_name="Book Contributer"
+    role_name="Book Contributor"
     model = Book
     form_class = BookUpdateForm
     template_name = "bookclub/book_update.html"
