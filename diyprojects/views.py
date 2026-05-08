@@ -17,11 +17,15 @@ class ProjectListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all().distinct()
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+        if self.request.user.is_authenticated:
             profile = self.request.user.profile
-            context['created'] = Project.objects.filter(creator=profile)
-            context['favorites'] = Project.objects.filter(favorites__profile=profile)
-            context['reviewed'] = Project.objects.filter(reviews__reviewer=profile)
+            context['created'] = Project.objects.filter(creator=profile).distinct()
+            context['favorites'] = Project.objects.filter(favorites__profile=profile).distinct()
+            context['reviewed'] = Project.objects.filter(reviews__reviewer=profile).distinct()
+
+            context['projects'] = Project.objects.exclude(creator=profile
+                                                ).exclude(favorites__profile=profile
+                                                ).exclude(reviews__reviewer=profile).distinct()
         return context
 
 
