@@ -5,12 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from accounts.models import Profile
-from accounts.mixins import RoleRequiredMixin
-from accounts.decorators import role_required
 
 
 def book_detail(request, id):
@@ -32,12 +29,13 @@ class BookListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        
 
         
 
-        if profile.user.is_authenticated:
-            
+        if self.request.user.is_authenticated:
+            profile, created = Profile.objects.get_or_create(user=self.request.user)
+
             books_contributed = Book.objects.all()
 
 
@@ -87,39 +85,40 @@ class BookDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user=self.request.user
-        profile  = Profile.objects.get(user=user)
         book = self.get_object()
+        context["is_authenticated"] = user.is_authenticated
 
-        review=BookReview.objects.filter(bookreview_book=book, 
-                                  UserReviewer=profile).exists()
-
-        if user.is_authenticated:
-            context["reviewer"] = self.request.user.profile.name
-            
-
-            
-            if review:
-                context["review"] = BookReview.objects.get(
-                                        bookreview_book=book, 
-                                        UserReviewer=profile).bookreview_comment
-            context["is_bookmarked"] = book.bookmarked_book.filter(
-                bookmark_profile=user.profile
-            ).exists() 
-        else:
+        if not user.is_authenticated:
             context["is_bookmarked"] = False
-            context["reviewer"]=BookReview.AnonReviewer
-
-        context["bookmark_count"] = book.bookmarked_book.count()
+            context["review"] = BookReview.objects.all().last().bookreview_comment
+        else:
+            profile  = Profile.objects.get(user=user)
+            review=BookReview.objects.filter(bookreview_book=book, 
+                                  UserReviewer=profile).exists()
+            context["reviewer"] = self.request.user.profile.name
         
-    
+            if review and user.is_authenticated:
+                context["review"] = BookReview.objects.get(
+                                            bookreview_book=book, 
+                                            UserReviewer=profile).bookreview_comment
+                context["is_bookmarked"] = book.bookmarked_book.filter(
+                    bookmark_profile=user.profile
+                ).exists() 
+            context["bookmark_count"] = book.bookmarked_book.count()
+            context["reviews"] = book.bookmarked_book.count()
+        
+
         return context
     def post(self, request, *args, **kwargs):
-
+        user=self.request.user
         book = self.get_object()
-        profile, created = Profile.objects.get_or_create(user=self.request.user)
-        bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
-        bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
         action = request.POST.get('action')
+
+        if user.is_authenticated:
+            profile, created = Profile.objects.get_or_create(user=self.request.user)
+            bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
+            bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
+
 
 
         if action=='toggle_bookmark':
@@ -134,9 +133,12 @@ class BookDetailView(DetailView):
         if action=='submit_review':
             content = request.POST.get('review_content')
 
-            if not request.user.is_authenticated:
-                UserReviewer = ""
-            if content:
+            if not request.user.is_authenticated and content:
+                BookReview.objects.create( 
+                    bookreview_book=book, 
+                    bookreview_comment=content
+                )
+            elif content:
                 BookReview.objects.create(
                     UserReviewer=profile, 
                     bookreview_book=book, 
@@ -151,25 +153,54 @@ class BookDetailView(DetailView):
 
 
 
-class BookCreateView(LoginRequiredMixin,RoleRequiredMixin, CreateView):
+class BookCreateView(LoginRequiredMixin, CreateView):
     role_required="Book Contributer"
     model = Book
     form_class = BookContributeForm
     template_name = "bookclub/book_create.html"
-    fields = '__all__'
+
+    def form_valid(self, form):
+        book = form.save(commit=False)
+
+        book.save()
+        self.object = book
+
+        return super().form_valid(form)
 
 
-class BookUpdateView(LoginRequiredMixin,RoleRequiredMixin, UpdateView):
+class BookUpdateView(LoginRequiredMixin, UpdateView):
     role_required="Book Contributer"
     model = Book
     form_class = BookContributeForm
     template_name = "bookclub/book_update.html"
-    fields = '__all__'
+
+    def form_valid(self, form):
+        book = form.save(commit=False)
+
+        book.save()
+        self.object = book
+
+        return super().form_valid(form)
+    
 
 
 class BookBorrowView(CreateView):
     model = Borrow
     form_class = BookBorrowForm
     template_name = "bookclub/book_borrow.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["book"] = Book.objects.get()
+
+    def get_initial(self):
+        initial = super().get_initial()
+
+        if self.request.user.is_authenticated:
+            initial["borrower_name"] = str(
+                self.request.user.profile
+            )
+
 
 

@@ -9,20 +9,13 @@ class BookReviewForm(forms.ModelForm):
         fields = '__all__'
 
 class BookBorrowForm(forms.ModelForm):
+
     class Meta:
         model = Borrow
-        fields = '__all__'
-
+        fields = ['borrower_name', 'book_borrowdate']
 class BookContributeForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = '__all__'
         
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        
-        if self.instance and self.instance.pk:
-            self.fields['role_required'].disabled = True
-        else:
-            self.initial['role_required'] = "Book Contributor"

@@ -57,7 +57,7 @@ class BookReview(models.Model):
         blank=True,
         related_name="reviewer"
     )
-    AnonReviewer = models.TextField()
+    AnonReviewer = models.TextField(default="Text")
     bookreview_book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
@@ -104,11 +104,13 @@ class Borrow(models.Model):
         blank=True,
         related_name="borrower"
     )
-    book_name = models.CharField()
-    book_borrowdate = models.DateField(null=False,
-                                     auto_now_add=True)
+    book_name = models.CharField(max_length=255, blank=True, null=True)
+    book_borrowdate = models.DateField()
     borrow_returndate = models.DateField()
 
+    def get_absolute_url(self):
+        return reverse('bookclub:book_borrow', args=[str(self.borrow_book.pk)])
+    
     class Meta:
         verbose_name = 'borrowed'
         verbose_name_plural = 'multiple_borrowed'

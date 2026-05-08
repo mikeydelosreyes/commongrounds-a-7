@@ -10,13 +10,11 @@
     <ul>
         <li>Author: {{ book.author }}</li>
         <li>Publication year: {{ book.publication_year}}</li>
-        <li>Created: {{ book.created_on|date:"Y-m-d"}}</li>
+        <li>Sypnopsis: {{book.sypnopsis}}</li>
         <li>Available to Borrow: {{ book.borrow_availability}}</li>
+        <li>Created: {{ book.created_on|date:"Y-m-d"}}</li>
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
-        <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
-        {% if user.profile.role == "Book Contributer" %}
         <li > <a href="{% url 'bookclub:book_update' pk=book.pk %}" > edit </a> </li >
-        {% endif %}   
     </ul>
 
         <form method="POST">
@@ -30,19 +28,26 @@
             </button>
         </form>
 
-        <form method="POST">
-            {% csrf_token %}
-            <textarea name="review_content" placeholder="Write your review..."></textarea>
-            <button type="submit" name="action" value="submit_review">Post Review</button>
-        </form>
 
         
 
     <h2>REVIEWS</h2>
 
+    {% if is_authenticated %}
     Your Review:
     <h2> Profile: {{ reviewer }}</h2>
     <div> {{ review }}</div>
+    {% else %}
+        Anonymous Review: {{ anonreviewer }}
+        <div> {{ review }}</div>
+    {% endif %}
+
+    <form method="POST">
+            {% csrf_token %}
+        <textarea name="review_content" placeholder="Write your review..."></textarea>
+        <button type="submit" name="action" value="submit_review">Post Review</button>
+    </form>
+
 
 
 

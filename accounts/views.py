@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
-from .decorators import role_required
 from .forms import ProfileForm
 from .models import Profile
 
