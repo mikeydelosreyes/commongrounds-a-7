@@ -2,12 +2,15 @@ from .models import Book, BookReview, Bookmark, Borrow
 from .forms import *
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import render, redirect
 
 from accounts.models import Profile
+from accounts.mixins import RoleRequiredMixin
+from accounts.decorators import role_required
 
 
 def book_detail(request, id):
@@ -18,7 +21,11 @@ def book_detail(request, id):
         "book": Book,
     })
 
-
+@login_required
+def return_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return profile
 
 
 
@@ -34,12 +41,10 @@ class BookListView(ListView):
         
 
         if self.request.user.is_authenticated:
-            profile, created = Profile.objects.get_or_create(user=self.request.user)
+            
+            profile=return_profile()
 
             books_contributed = Book.objects.all()
-
-
-
 
             books_bookmarked = Book.objects.filter(
                 bookmarked_book__bookmark_profile=profile
@@ -153,35 +158,20 @@ class BookDetailView(DetailView):
 
 
 
-class BookCreateView(LoginRequiredMixin, CreateView):
-    role_required="Book Contributer"
+class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
+    role_name="Book Contributer"
     model = Book
     form_class = BookContributeForm
     template_name = "bookclub/book_create.html"
 
-    def form_valid(self, form):
-        book = form.save(commit=False)
-
-        book.save()
-        self.object = book
-
-        return super().form_valid(form)
 
 
-class BookUpdateView(LoginRequiredMixin, UpdateView):
-    role_required="Book Contributer"
+class BookUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
+    role_name="Book Contributer"
     model = Book
     form_class = BookContributeForm
     template_name = "bookclub/book_update.html"
 
-    def form_valid(self, form):
-        book = form.save(commit=False)
-
-        book.save()
-        self.object = book
-
-        return super().form_valid(form)
-    
 
 
 class BookBorrowView(CreateView):
@@ -201,6 +191,4 @@ class BookBorrowView(CreateView):
             initial["borrower_name"] = str(
                 self.request.user.profile
             )
-
-
 
