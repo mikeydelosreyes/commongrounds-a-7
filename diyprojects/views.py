@@ -73,14 +73,14 @@ class ProjectDetailView(DetailView):
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                get_review = project.reviews.get(reviewer=profile)
+                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
+                                                                                image = review.cleaned_data.get('image'))                
+            else:
+                get_review = project.reviews.filter(reviewer=profile).first()
                 get_review.comment = review.cleaned_data['comment']
                 if review.cleaned_data.get('image'):
                     get_review.image = review.cleaned_data['image']
                 get_review.save()
-            else:
-                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
-                                                                                image = review.cleaned_data.get('image'))
             return redirect(self.get_success_url())
             
     def get_success_url(self):
@@ -98,6 +98,8 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         form.instance.role_required = "Project Creator"
         return super().form_valid(form)
     
+    def test_func(self):
+        return self.request.user.is_authenticated
 
     
     
