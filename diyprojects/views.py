@@ -66,9 +66,9 @@ class ProjectDetailView(DetailView):
             if rating.is_valid():
                 
                 if project.ratings.filter(profile=profile).exists():
-                    project.ratings.filter(profile=profile).update(score = rating.cleaned_data['score'])
+                    project.ratings.filter(profile=profile).update(score = rating.instance.score)
                 else:
-                    ProjectRating.objects.create(profile=profile, project=project, score = rating.cleaned_data['score'])
+                    ProjectRating.objects.create(profile=profile, project=project, score = rating.instance.score)
                 return redirect(self.get_success_url())
             
             return redirect(self.get_success_url())
@@ -78,13 +78,13 @@ class ProjectDetailView(DetailView):
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.cleaned_data['comment'],
-                                                                                image = review.cleaned_data.get('image'))                
+                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.instance.comment,
+                                                                                image = review.instance.image)                
             else:
                 get_review = project.reviews.filter(reviewer=profile).first()
-                get_review.comment = review.cleaned_data['comment']
-                if review.cleaned_data.get('image'):
-                    get_review.image = review.cleaned_data['image']
+                get_review.comment = review.instance.comment
+                if review.instance.image:
+                    get_review.image = review.instance.image
                 get_review.save()
 
             return redirect(self.get_success_url())
