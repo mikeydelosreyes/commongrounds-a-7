@@ -1,8 +1,7 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.mixins import (LoginRequiredMixin)
 from django.db.models import Q, Avg
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -87,7 +86,8 @@ class ProjectDetailView(DetailView):
     def get_success_url(self):
         return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    role_required="Project Creator"
     model = Project
     template_name = "diyprojects/project_form.html"
     form_class = ProjectForm
@@ -95,9 +95,14 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
+        form.instance.role_required = "Project Creator"
         return super().form_valid(form)
     
-class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+
+    
+    
+class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    role_required="Project Creator"
     model = Project
     template_name = "diyprojects/project_update.html"
     form_class = ProjectUpdateForm
