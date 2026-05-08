@@ -37,21 +37,19 @@ class ProjectDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         project = self.object
         context['favorites'] = project.favorites.count()
-        average_score = project.ratings.aggregate(Avg('score'))['score__avg']
-        context['average_score'] = average_score
+        context['average_score'] = project.ratings.aggregate(Avg('score'))['score__avg']
         context['rating_form'] = ProjectRatingForm()
         context['review_form'] = ProjectReviewForm()
         context['reviews'] = project.reviews.all()
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'profile'):
+        if self.request.user.is_authenticated:
             context['is_favorited'] = project.favorites.filter(profile=self.request.user.profile).exists()
         return context
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        project = self.object
-
-        
+        project = self.object        
         profile = request.user.profile
+
 
         if 'check_favorite' in request.POST:
             favorite = Favorite.objects.filter(project=project, profile=profile).exists()
@@ -62,16 +60,21 @@ class ProjectDetailView(DetailView):
                 Favorite.objects.create(project=project, profile=profile)                
             return redirect(self.get_success_url())
 
+
         
         if 'submit_rating' in request.POST:
             rating = ProjectRatingForm(request.POST)
             if rating.is_valid():
+                
                 if project.ratings.filter(profile=profile).exists():
                     project.ratings.filter(profile=profile).update(score = rating.cleaned_data['score'])
                 else:
                     ProjectRating.objects.create(profile=profile, project=project, score = rating.cleaned_data['score'])
                 return redirect(self.get_success_url())
+            
             return redirect(self.get_success_url())
+
+
 
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
@@ -84,10 +87,15 @@ class ProjectDetailView(DetailView):
                 if review.cleaned_data.get('image'):
                     get_review.image = review.cleaned_data['image']
                 get_review.save()
+
             return redirect(self.get_success_url())
-            
+    
+
     def get_success_url(self):
-        return redirect('diyprojects:project_detail', pk=self.kwargs['pk'])
+        return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
+    
+
+
 
 class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     role_required = "Project Creator"
@@ -101,9 +109,7 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
-        return super().form_valid(form)
-    
-    
+        return super().form_valid(form)   
 
     
     
@@ -116,6 +122,3 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         project = self.get_object()
         return (self.request.user.profile.role == "Project Creator")
-
-    def get_success_url(self):
-        return redirect('diyprojects:project_detail', pk=self.kwargs['pk'])
