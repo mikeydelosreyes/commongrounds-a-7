@@ -119,5 +119,4 @@ class ProjectUpdateView(UpdateView):
     form_class = ProjectUpdateForm
 
     def test_func(self):
-        project = self.get_object()
         return (self.request.user.profile.role == "Project Creator")
