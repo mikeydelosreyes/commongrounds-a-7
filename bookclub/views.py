@@ -120,7 +120,7 @@ class BookDetailView(DetailView):
         action = request.POST.get('action')
 
         if user.is_authenticated:
-            profile, created = Profile.objects.get_or_create(user=self.request.user)
+            profile=return_profile(self.request)
             bookmark = Bookmark.objects.filter(bookmark_profile=profile, bookmark_book=book)
             bookreview = BookReview.objects.filter(UserReviewer=profile, bookreview_book=book)
 
@@ -192,6 +192,18 @@ class BookBorrowView(CreateView):
     model = Borrow
     form_class = BookBorrowForm
     template_name = "bookclub/book_borrow.html"
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+
+        borrowed_book=Book.objects.get(pk=self.kwargs['pk'])
+
+    def get_initial(self):
+        initial = super().get_initial()
+
+        initial['book_name'] = self.request.user.profile.name
+
+        return initial
 
     
 
