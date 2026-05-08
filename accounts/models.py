@@ -5,7 +5,7 @@ from django.urls import *
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=63)
+    username = models.CharField(max_length=63)
     email = models.EmailField(max_length=254)
     role = models.CharField(max_length=63, null=True, blank=True)
 
