@@ -3,8 +3,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.db.models import Q, Avg
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from .models import *
 from .forms import *
 
@@ -88,34 +87,35 @@ class ProjectDetailView(DetailView):
             return redirect(self.get_success_url())
             
     def get_success_url(self):
-        return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
+        return redirect('diyprojects:project_detail', pk=self.kwargs['pk'])
 
 class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    role_required="Project Creator"
+    role_required = "Project Creator"
     model = Project
     template_name = "diyprojects/project_form.html"
     form_class = ProjectForm
 
 
+    def test_func(self):
+        return self.request.user.profile.role == "Project Creator"
+
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
         return super().form_valid(form)
     
-    def test_func(self):
-        return self.request.user.profile.role == "Project Creator"
+    
 
     
     
 class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    role_required="Project Creator"
+    role_required = "Project Creator"
     model = Project
     template_name = "diyprojects/project_update.html"
     form_class = ProjectUpdateForm
 
     def test_func(self):
         project = self.get_object()
-        return (self.request.user.profile.role == "Project Creator" and 
-                project.creator == self.request.user.profile)
+        return (self.request.user.profile.role == "Project Creator")
 
     def get_success_url(self):
-        return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
+        return redirect('diyprojects:project_detail', pk=self.kwargs['pk'])

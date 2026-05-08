@@ -34,8 +34,9 @@
                 {{project.title}} - {{ project.created_on|date:"Y-m-d"}}</a>                
             </li>
         {% endfor %}
-
-        <a href="{% url 'diyprojects:project_create' %}">Create Project</a>
+        {% if request.user.is_authenticated and request.user.profile.role == "Project Creator" %}
+            <a href="{% url 'diyprojects:project_create' %}">Create Project</a>
+        {% endif %}
     </ul>
 
     
