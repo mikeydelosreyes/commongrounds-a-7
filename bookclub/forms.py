@@ -2,20 +2,17 @@
 from django import forms
 from .models import *
 
-
-class BookReviewForm(forms.ModelForm):
+class BookCreateForm(forms.ModelForm):
+    
     class Meta:
-        model = BookReview
-        fields = '__all__'
+        model = Book
+        exclude = ['contributor']
+        widgets = {'genre': forms.Select()}
 
 class BookBorrowForm(forms.ModelForm):
 
     class Meta:
         model = Borrow
         fields = ['borrower', 'book_borrowdate']
-class BookContributeForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = '__all__'
-        
+
 

@@ -161,7 +161,7 @@ class BookDetailView(DetailView):
 class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     role_name="Book Contributer"
     model = Book
-    form_class = BookContributeForm
+    form_class = BookCreateForm
     template_name = "bookclub/book_create.html"
 
 
