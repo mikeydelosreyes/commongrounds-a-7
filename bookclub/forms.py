@@ -19,6 +19,6 @@ class BookBorrowForm(forms.ModelForm):
 
     class Meta:
         model = Borrow
-        fields = ['borrower', 'book_borrowdate']
+        fields = ['book_name', 'book_borrowdate']
 
 

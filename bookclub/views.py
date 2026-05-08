@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from accounts.models import Profile
 from accounts.mixins import RoleRequiredMixin
 from accounts.decorators import role_required
+from datetime import timedelta
 
 
 def book_detail(request, id):
@@ -194,16 +195,51 @@ class BookBorrowView(CreateView):
     template_name = "bookclub/book_borrow.html"
 
     def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
-        borrowed_book=Book.objects.get(pk=self.kwargs['pk'])
+        context["borrowed_book"] = Book.objects.get(pk=self.kwargs["pk"])
+
+        return context
 
     def get_initial(self):
         initial = super().get_initial()
-
-        initial['book_name'] = self.request.user.profile.name
+        if self.request.user.is_authenticated:
+            initial['book_name'] = self.request.user.profile.name
 
         return initial
+
+    def get_form(self, form_class = BookBorrowForm):
+
+        form = super().get_form(form_class)
+        if self.request.user.is_authenticated:
+
+            form.fields["book_name"].required = False
+
+            form.fields["book_name"].widget.attrs.update({
+                "readonly": True
+            })
+
+        return form
+    
+    def form_valid(self, form):
+        book = Book.objects.get(pk=self.kwargs["pk"])
+        
+        form.instance.borrow_book = book
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            form.instance.borrower = profile
+
+            if not form.instance.book_name:
+                form.instance.book_name = profile.name
+
+        borrow_date = form.cleaned_data["book_borrowdate"]
+        form.instance.borrow_returndate = borrow_date + timedelta(days=14)
+
+
+        return super().form_valid(form)
+    
+
+    
 
     
 
