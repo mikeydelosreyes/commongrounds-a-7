@@ -169,7 +169,7 @@ class BookCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
 class BookUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     role_name="Book Contributer"
     model = Book
-    form_class = BookContributeForm
+    form_class = BookUpdateForm
     template_name = "bookclub/book_update.html"
 
 
@@ -179,16 +179,5 @@ class BookBorrowView(CreateView):
     form_class = BookBorrowForm
     template_name = "bookclub/book_borrow.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context["book"] = Book.objects.get()
-
-    def get_initial(self):
-        initial = super().get_initial()
-
-        if self.request.user.is_authenticated:
-            initial["borrower_name"] = str(
-                self.request.user.profile
-            )
+    
 
