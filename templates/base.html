@@ -15,7 +15,7 @@
             </button>
         </form>
     {% else %}
-        <button type="submit" style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
+        <button type="submit" href="{% url 'login' %}" style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
         <h3>Login</h3>
         </button>
     {% endif %}
