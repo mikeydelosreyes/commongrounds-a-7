@@ -95,11 +95,10 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
-        form.instance.role_required = "Project Creator"
         return super().form_valid(form)
     
     def test_func(self):
-        return self.request.user.is_authenticated
+        return self.request.user.profile.role == "Project Creator"
 
     
     
@@ -109,6 +108,10 @@ class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = "diyprojects/project_update.html"
     form_class = ProjectUpdateForm
 
+    def test_func(self):
+        project = self.get_object()
+        return (self.request.user.profile.role == "Project Creator" and 
+                project.creator == self.request.user.profile)
 
     def get_success_url(self):
         return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
