@@ -25,10 +25,17 @@ class Genre(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
-    genre = models.ForeignKey(Genre,
-                              on_delete=models.SET_NULL,
-                              related_name="books",
-                              null=True)
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        related_name="books",
+        null=True)
+    contributor = models.ForeignKey(
+        Profile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="contributed_books")
     author = models.CharField()
     sypnopsis = models.TextField()
     publication_year = models.IntegerField()
