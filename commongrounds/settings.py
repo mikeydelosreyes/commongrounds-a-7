@@ -131,4 +131,4 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
 LOGIN_REDIRECT_URL="/localevents/events" #PLACEHOLDER CODE
-LOGOUT_REDIRECT_URL="/accounts/logout"
+LOGOUT_REDIRECT_URL="/accounts/login"
