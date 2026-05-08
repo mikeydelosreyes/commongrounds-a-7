@@ -3,11 +3,41 @@
 
 {% block header %}<h1>Book List</h1>{% endblock %}
 {% block content %}
+
+    Contributed Books:
+    <ul>
+        {% for book in contributed_books %}
+            <li><a href ="{{ book.get_absolute_url }}">
+            {{ book.title }} - {{ book.publication_year }}</a></li>
+        {% endfor %}
+    </ul>
+    Bookmarked Books:
+    <ul>
+        {% for book in bookmarked_books %}
+            <li><a href ="{{ book.get_absolute_url }}">
+            {{ book.title }} - {{ book.publication_year }}</a></li>
+        {% endfor %}
+    </ul>
+    Reviewed Books:
+    <ul>
+        {% for book in reviewed_books %}
+            <li><a href ="{{ book.get_absolute_url }}">
+            {{ book.title }} - {{ book.publication_year }}</a></li>
+        {% endfor %}
+    </ul>
+
+    All Books
     <ul>
         {% for book in all_books %}
             <li><a href ="{{ book.get_absolute_url }}">
             {{ book.title }} - {{ book.publication_year }}</a></li>
         {% endfor %}
     </ul>
+
+
+
+
+
+
 
 {% endblock %}

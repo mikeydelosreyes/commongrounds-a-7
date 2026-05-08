@@ -11,7 +11,11 @@
         <li>Author: {{ book.author }}</li>
         <li>Publication year: {{ book.publication_year}}</li>
         <li>Sypnopsis: {{book.sypnopsis}}</li>
-        <li>Available to Borrow: {{ book.borrow_availability}}</li>
+        {% if book.borrow_availability %}
+        <li>Available to Borrow: Available </li>
+        {% else %}
+        <li>Available to Borrow: Unavailable </li>
+        {% endif %}
         <li>Created: {{ book.created_on|date:"Y-m-d"}}</li>
         <li>Last updated: {{ book.updated_on|date:"Y-m-d"}}</li>
         <li > <a href="{% url 'bookclub:book_update' pk=book.pk %}" > edit </a> </li >
@@ -48,12 +52,11 @@
         <button type="submit" name="action" value="submit_review">Post Review</button>
     </form>
 
-
-
-
+    {% if book.borrow_availability %}
     <a href="{% url 'bookclub:book_borrow' pk=book.pk %}">
                 <button type="button">Borrow Book</button>
     </a>  <br>
+    {% endif %}
 
 
 {% endblock %}

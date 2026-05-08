@@ -45,7 +45,7 @@ class BookListView(ListView):
             
             profile=return_profile(self.request)
 
-            books_contributed = Book.objects.all()
+            books_contributed = Book.objects.filter(contributor=profile).distinct()
 
             books_bookmarked = Book.objects.filter(
                 bookmarked_book__bookmark_profile=profile
@@ -64,7 +64,7 @@ class BookListView(ListView):
             )
 
             context["contributed_books"] = books_contributed
-            context["bookmarked_book"] = books_bookmarked
+            context["bookmarked_books"] = books_bookmarked
             context["reviewed_books"] = books_reviewed
             context["all_books"] = all_books
 
@@ -72,16 +72,6 @@ class BookListView(ListView):
         return context
     
 
-
-
-"""
-There should be a button that allows you to bookmark the book. The number of bookmarks on the book should also be displayed.
-There should be a Form that is rendered on this view that allows you to review the book. When the user is logged in, the review is automatically assigned to the Profile with the associated display name. Else, the display name should be “Anonymous”.
-There should be a button to borrow a book that will lead to the borrow view.
-In this view, if the Book’s contributor is the logged-in user, there should be an edit link that will lead to the update view.
-The list of book reviews should be shown.
-
-"""
 
 class BookDetailView(DetailView):
     model = Book
@@ -194,6 +184,15 @@ class BookBorrowView(CreateView):
     form_class = BookBorrowForm
     template_name = "bookclub/book_borrow.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        book = Book.objects.get(pk=self.kwargs["pk"])
+        dispatch = super().dispatch(request, *args, **kwargs)
+
+        if not book.borrow_availability:
+            return redirect('bookclub:book_detail', pk=book.pk)
+        
+        return dispatch
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -223,7 +222,7 @@ class BookBorrowView(CreateView):
     
     def form_valid(self, form):
         book = Book.objects.get(pk=self.kwargs["pk"])
-        
+
         form.instance.borrow_book = book
         if self.request.user.is_authenticated:
             profile = self.request.user.profile
@@ -234,6 +233,8 @@ class BookBorrowView(CreateView):
 
         borrow_date = form.cleaned_data["book_borrowdate"]
         form.instance.borrow_returndate = borrow_date + timedelta(days=14)
+        book.borrow_availability=False
+        form.save()
 
 
         return super().form_valid(form)
