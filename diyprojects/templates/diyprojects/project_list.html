@@ -11,7 +11,7 @@
                 {{create.title}} - {{ create.created_on|date:"Y-m-d"}}</a>
             </li>
         {% endfor %}
-        <h3>Favorties</h3>
+        <h3>Favorites</h3>
         {% for favorite in favorites %}
             <li>
                 <a href="{{favorite.get_absolute_url}}">
