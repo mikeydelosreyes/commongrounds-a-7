@@ -1,6 +1,5 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.db.models import Q, Avg
 from django.shortcuts import redirect
@@ -97,7 +96,7 @@ class ProjectDetailView(DetailView):
 
 
 
-class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class ProjectCreateView(CreateView):
     role_required = "Project Creator"
     model = Project
     template_name = "diyprojects/project_form.html"
@@ -113,7 +112,7 @@ class ProjectCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     
     
-class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ProjectUpdateView(UpdateView):
     role_required = "Project Creator"
     model = Project
     template_name = "diyprojects/project_update.html"
