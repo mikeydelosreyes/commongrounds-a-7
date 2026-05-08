@@ -3,10 +3,13 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Case, When, Value, IntegerField, Count, Q
+from django.db.models import Case, When, Value, IntegerField
 
 from .models import *
 from .forms import *
+
+from accounts.mixins import RoleRequiredMixin
+from accounts.models import Profile
 
 class CommissionListView(ListView):
     model = Commission
@@ -81,7 +84,13 @@ class CommissionDetailView(DetailView):
         accepted = sum(job.applications.filter(status='2_ACPT').count() for job in jobs) 
 
         open_manpower = total_manpower - accepted
-        
+
+        if open_manpower <= 0:
+            commission.status = 'Full'
+        else:
+            commission.status = 'Open'
+        commission.save()
+
         ctx['jobs'] = jobs
         ctx['total_manpower'] = total_manpower
         ctx['open_manpower'] = max(0, open_manpower) 
@@ -113,7 +122,8 @@ class CommissionDetailView(DetailView):
 
         return redirect('commissions:commission_detail', pk=self.object.pk)
     
-class CommissionCreateView(LoginRequiredMixin, CreateView):
+class CommissionCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
+    role_name = "Commission Maker"
     model = Commission
     form_class = CommissionForm
     template_name = "commissions/commissions_create.html"  
@@ -141,7 +151,8 @@ class CommissionCreateView(LoginRequiredMixin, CreateView):
         else:
             return render(self.request, self.template_name, self.get_context_data(form=form))
 
-class CommissionUpdateView(LoginRequiredMixin, UpdateView):
+class CommissionUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
+    role_name = "Commission Maker"
     model = Commission
     form_class = CommissionForm
     template_name = "commissions/commissions_update.html"   
