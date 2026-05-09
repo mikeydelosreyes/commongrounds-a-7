@@ -31,7 +31,6 @@ class CommissionListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         qs = self.get_queryset()
-        commissions = Commission.objects.all()
         
         if self.request.user.is_authenticated:
             current_profile = Profile.objects.get(user=self.request.user)
@@ -43,8 +42,6 @@ class CommissionListView(ListView):
             ctx["applied_commissions"] = applied_commissions
             ctx["other_commissions"] = other_commissions
 
-        ctx["all_commissions"] = commissions
-
         return ctx
 
 class CommissionDetailView(DetailView):
@@ -54,7 +51,6 @@ class CommissionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         commission = self.object
-
         jobs = commission.jobs.all()
 
         all_jobs_full = True
@@ -110,7 +106,7 @@ class CommissionDetailView(DetailView):
             return redirect('login')
 
         job = self.object.jobs.get(id=job_id)
-        profile = request.user.profile
+        profile = Profile.objects.get(user=self.request.user)
 
         if JobApplication.objects.filter(job=job, applicant=profile).exists():
             return redirect('commissions:commission_detail', pk=self.object.pk)
