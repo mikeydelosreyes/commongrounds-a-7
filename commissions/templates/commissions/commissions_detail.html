@@ -22,10 +22,10 @@
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="job_id" value="{{ job.id }}">
-            {% if job.accepted_count >= job.manpower_required %} 
-            <button disabled>Apply to Job</button>
-            {% else %}
+            {% if job.accepted_count < job.manpower_required and user.is_authenticated %} 
             <button>Apply to Job</button>
+            {% else %}
+            <button disabled>Apply to Job</button>
             {% endif %}
     </form>
     {% endfor %}
