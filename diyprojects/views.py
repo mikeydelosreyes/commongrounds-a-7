@@ -45,8 +45,7 @@ class ProjectDetailView(DetailView):
         return context
     
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        project = self.object        
+        project = self.get_object()       
         profile = request.user.profile
 
 
