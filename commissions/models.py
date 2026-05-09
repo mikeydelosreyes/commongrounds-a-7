@@ -24,11 +24,13 @@ class CommissionType(models.Model):
 class Commission(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    type = models.ForeignKey(CommissionType, on_delete=models.SET_NULL, null=True)
+    type = models.ForeignKey(CommissionType,
+                             on_delete=models.SET_NULL,
+                             null=True)
     maker = models.ForeignKey(Profile, on_delete=models.CASCADE)
     STATUS_CHOICES = {
-        "Open" : "Open",
-        "Full" : "Full",
+        "Open": "Open",
+        "Full": "Full",
     }
     status = models.CharField(choices=STATUS_CHOICES, default="Open")
     people_required = models.PositiveIntegerField()
@@ -46,35 +48,41 @@ class Commission(models.Model):
         verbose_name = 'commission'
         verbose_name_plural = 'commissions'
 
+
 class Job(models.Model):
-    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name="jobs")
+    commission = models.ForeignKey(Commission,
+                                   on_delete=models.CASCADE,
+                                   related_name="jobs")
     role = models.CharField(max_length=255)
     manpower_required = models.PositiveIntegerField()
     STATUS_CHOICES = {
-        "1_OPEN" : "Open",
-        "2_FULL" : "Full",
+        "1_OPEN": "Open",
+        "2_FULL": "Full",
     }
     status = models.CharField(choices=STATUS_CHOICES, default="1_OPEN")
 
     def __str__(self):
         return self.role
-    
+
     class Meta:
         ordering = ['status', '-manpower_required', 'role']
         verbose_name = 'job'
         verbose_name_plural = 'jobs'
 
+
 class JobApplication(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
+    job = models.ForeignKey(Job,
+                            on_delete=models.CASCADE,
+                            related_name="applications")
     applicant = models.ForeignKey(Profile, on_delete=models.CASCADE)
     STATUS_CHOICES = {
-        "1_PEND" : "Pending",
-        "2_ACPT" : "Accepted",
-        "3_RJCT" : "Rejected",
+        "1_PEND": "Pending",
+        "2_ACPT": "Accepted",
+        "3_RJCT": "Rejected",
     }
     status = models.CharField(choices=STATUS_CHOICES, default="1_PEND")
     applied_on = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['status', '-applied_on']
         verbose_name = 'job application'

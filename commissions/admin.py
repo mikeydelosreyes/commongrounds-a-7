@@ -11,7 +11,8 @@ class CommissionAdmin(admin.ModelAdmin):
 
     search_fields = ('title', )
 
-    list_display = ('title', 'people_required', "created_on", "status", "maker")
+    list_display = ('title', 'people_required',
+                    "created_on", "status", "maker")
 
     list_filter = ('title', 'people_required')
 
@@ -23,16 +24,18 @@ class CommissionAdmin(admin.ModelAdmin):
         })
     ]
 
+
 class JobAdmin(admin.ModelAdmin):
     model = Job
     list_display = ('role', 'commission', 'manpower_required', 'status')
-    list_filter = ('status',)   
+    list_filter = ('status',)
 
 
 class JobApplicationAdmin(admin.ModelAdmin):
     model = JobApplication
     list_display = ('applicant', 'job', 'status', 'applied_on')
     list_filter = ('status',)
+
 
 admin.site.register(CommissionType, CommissionTypeAdmin)
 admin.site.register(Commission, CommissionAdmin)
