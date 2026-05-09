@@ -14,6 +14,7 @@ from accounts.decorators import role_required
 from .strategies import OwnProductsStrategy, OtherProductsStrategy, AllProductsStrategy
 
 from .models import *
+from .forms import *
 
 
 class ProductListView(ListView):
@@ -68,19 +69,28 @@ class ProductDetailView(DetailView):
 
         return context
 
+
     def post(self, request, *args, **kwargs):
         product = self.get_object()
 
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
 
-        form = Transaction(request.POST)
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        form = TransactionForm(request.POST)
+
         if form.is_valid():
             transaction = form.save(commit=False)
             transaction.Product_Bought = product
-            transaction.Buyer = Profile.objects.get(user=request.user)
-            transaction.save()
-            return redirect("cart_view")
+            transaction.Buyer = profile
+
+            if product.stock >= transaction.Amount:
+                product.stock -= transaction.Amount
+                product.save()
+                transaction.save()
+                return redirect("cart_view")
+            else:
+                form.add_error("Amount", "Not enough stock available.")
 
         context = self.get_context_data()
         context["form"] = form
@@ -113,6 +123,7 @@ class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Product
     template_name = "merchstore/item_form.html"
     fields = ["name", "product_type", "description", "price", "stock", "status"]
+    context_object_name = "product_updator"
 
     success_url = reverse_lazy("product_list")
 
