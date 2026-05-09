@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import redirect_to_login
@@ -11,10 +11,13 @@ from accounts.models import Profile
 from accounts.mixins import RoleRequiredMixin
 from accounts.decorators import role_required
 
+from .strategies import OwnProductsStrategy, OtherProductsStrategy, AllProductsStrategy
+
 from .models import *
 
 
 class ProductListView(ListView):
+
     model = Product
     template_name = "merchstore/item_list.html"
     context_object_name = "products"
@@ -24,30 +27,19 @@ class ProductListView(ListView):
 
         if self.request.user.is_authenticated:
             try:
-                user_profile = Profile.objects.get(user=self.request.user)
-
-                # products from this prof
-                user_products = Product.objects.filter(owner=user_profile)
-
-                # all other products
-                all_products = Product.objects.exclude(owner=user_profile)
-
-                context["user_products"] = user_products
-                context["all_products"] = all_products
+                context["user_products"] = OwnProductsStrategy().filter(self.request.user)
+                context["all_products"] = OtherProductsStrategy().filter(self.request.user)
             except Profile.DoesNotExist:
-                # no prof
-                context["all_products"] = Product.objects.all()
+                context["all_products"] = AllProductsStrategy().filter(self.request.user)
         else:
-            # not logged in
-            context["all_products"] = Product.objects.all()      
+            context["all_products"] = AllProductsStrategy().filter(self.request.user)
 
-        # link to create 
         context["create_product_url"] = reverse_lazy("product_create")
-
         return context
 
 
 class ProductDetailView(DetailView):
+
     model = Product
     template_name = "merchstore/item_detail.html"
     context_object_name = "product"
@@ -56,46 +48,40 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
 
-        # user != owner
-        if self.request.user.is_authenticated and product.owner != self.request.user:
-            context["form"] = Transaction()
+        if self.request.user.is_authenticated:
+            try:
+                user_profile = Profile.objects.get(user=self.request.user)
+
+                # if logged-in user is not the owner
+                if product.owner != user_profile:
+                    context["form"] = Transaction()
+                else:
+                    context["form"] = None
+                    context["edit_url"] = reverse_lazy(
+                        "product_update", kwargs={"pk": product.pk}
+                    )
+            except Profile.DoesNotExist:
+                # no Profile exists for this user
+                context["form"] = None
         else:
             context["form"] = None
-
-        # user == owner
-        if self.request.user.is_authenticated and product.owner == self.request.user:
-            context["edit_url"] = reverse_lazy("product_update", kwargs={"pk": product.pk})
 
         return context
 
     def post(self, request, *args, **kwargs):
         product = self.get_object()
 
-        # they can't buy their own product
-        if product.owner == request.user:
-            return redirect("product_detail", pk=product.pk)
-
-        # redirect for non logged-in
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
 
         form = Transaction(request.POST)
         if form.is_valid():
             transaction = form.save(commit=False)
-            transaction.product = product
-            transaction.buyer = request.user
+            transaction.Product_Bought = product
+            transaction.Buyer = Profile.objects.get(user=request.user)
+            transaction.save()  # Observer (signal) will handle stock update
+            return redirect("cart_view")
 
-            # update stock 
-            if product.stock > 0:
-                product.stock -= transaction.quantity
-                product.save()
-                transaction.save()
-                return redirect("cart_view")  # for CartView
-            else:
-                # if no stock
-                return redirect("product_detail", pk=product.pk)
-
-        # for invalid forms
         context = self.get_context_data()
         context["form"] = form
         return self.render_to_response(context)
