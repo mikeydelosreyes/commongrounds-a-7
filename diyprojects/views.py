@@ -50,10 +50,10 @@ class ProjectDetailView(DetailView):
 
 
         if 'check_favorite' in request.POST:
-            favorite = Favorite.objects.filter(project=project, profile=profile).exists()
-            
-            if favorite:
-                Favorite.objects.filter(project=project, profile=profile).delete()
+            get_favorite = Favorite.objects.filter(project=project, profile=profile)
+
+            if get_favorite.exists():
+                get_favorite.delete()
             else:
                 Favorite.objects.create(project=project, profile=profile)                
             return redirect(self.get_success_url())
@@ -62,12 +62,14 @@ class ProjectDetailView(DetailView):
         
         if 'submit_rating' in request.POST:
             rating = ProjectRatingForm(request.POST)
+
             if rating.is_valid():
-                
-                if project.ratings.filter(profile=profile).exists():
-                    project.ratings.filter(profile=profile).update(score = rating.instance.score)
+                get_rating = project.ratings.filter(project=project, profile=profile)
+
+                if get_rating.exists():
+                    get_rating.update(score = rating.instance.score)
                 else:
-                    ProjectRating.objects.create(profile=profile, project=project, score = rating.instance.score)
+                    ProjectRating.objects.create(project=project, profile=profile, score = rating.instance.score)
                 return redirect(self.get_success_url())
             
             return redirect(self.get_success_url())
@@ -77,15 +79,8 @@ class ProjectDetailView(DetailView):
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                ProjectReview.objects.create(reviewer=profile, project=project, comment = review.instance.comment,
-                                                                                image = review.instance.image)                
-            else:
-                get_review = project.reviews.filter(reviewer=profile).first()
-                get_review.comment = review.instance.comment
-                if review.instance.image:
-                    get_review.image = review.instance.image
-                get_review.save()
-
+                ProjectReview.objects.create(project=project, reviewer=profile, comment = review.instance.comment,
+                                                                                image = review.instance.image)
             return redirect(self.get_success_url())
     
 
