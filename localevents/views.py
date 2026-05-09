@@ -19,11 +19,14 @@ class EventListView(ListView):
         if not self.request.user.is_authenticated:
             context["all_events"] = Event.objects.all()
         else:
-            users_signups = EventSignup.objects.filter(user_registrant__user=self.request.user)
-            context["created_events"] = Event.objects.filter(organizer__user=self.request.user)
+            profile = Profile.objects.get(user=self.request.user)
+            users_signups = EventSignup.objects.get(user_registrant=profile)
+            context["created_events"] = Event.objects.filter(organizer=profile).distinct()
             #FIX SOURCE: https://docs.djangoproject.com/en/6.0/ref/models/querysets/
-            context["signedup_events"] = users_signups.select_related("event").all()
-            context["other_events"] = Event.objects.exclude(organizer__user=self.request.user).exclude(id__in=users_signups.select_related("event").all())
+            #want to get the user, specifically the profile
+            #Event->Singedup->Profile and then back
+            context["signedup_events"] = Event.objects.filter()            
+            context["other_events"] = Event.objects.exclude(organizer=profile, )
                                                     
         return context
     
