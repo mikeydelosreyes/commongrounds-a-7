@@ -32,7 +32,7 @@ class Product(models.Model):
         max_digits=6,
         decimal_places=2,
     )
-    stock = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(default=0)
     STATUS_CHOICES = [
         ('available', 'Available'),
         ('on_sale', 'On Sale'),
