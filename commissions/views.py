@@ -185,7 +185,7 @@ class CommissionUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
                     self.object.status = 'Full'
                 else:
                     self.object.status = "Open"
-            
+
             self.object.save()
 
             return redirect('commissions:commission_detail', pk=self.object.pk)
