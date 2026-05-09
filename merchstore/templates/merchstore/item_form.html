@@ -6,8 +6,12 @@
     <h2>Create a Product</h2>
     <form method="post">
         {% csrf_token %}
+
+        {% if owner_profile %}
+            <p><strong>Owner:</strong> {{ owner_profile.name }} ({{ owner_profile.user.username }})</p>        
+        {% endif %}
+        
         {{ form.as_p }}
         <button type="submit">Save</button>
     </form>
 {% endblock %}
-
