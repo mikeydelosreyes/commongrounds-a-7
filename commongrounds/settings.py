@@ -78,10 +78,21 @@ WSGI_APPLICATION = 'commongrounds.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+os.environ.setdefault("PGDATABASE", "liftoff_dev")
+os.environ.setdefault("PGUSER", "jonathaniigelito")
+os.environ.setdefault("PGPASSWORD", "Archduke29")
+os.environ.setdefault("PGHOST", "localhost")
+os.environ.setdefault("PGPORT", "5432")
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ["PGDATABASE"],
+        'USER': os.environ["PGUSER"],
+        'PASSWORD': os.environ["PGPASSWORD"],
+        'HOST': os.environ["PGHOST"],
+        'PORT': os.environ["PGPORT"],
+
     }
 }
 
