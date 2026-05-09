@@ -35,8 +35,9 @@
             </li>
         {% endfor %}
         <br>
+        <br>
         {% if request.user.is_authenticated and request.user.profile.role == "Project Creator" %}
-            <a href="{% url 'diyprojects:project_create' %}">Create Project</a>
+            <h2><a href="{% url 'diyprojects:project_create' %}">Create Project</a></h2>
         {% endif %}
     </ul>
 
