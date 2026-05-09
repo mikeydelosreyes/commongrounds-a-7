@@ -19,22 +19,11 @@
         <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
     </ul>
     <br>
-    {% if user.is_authenticated %}
-        {% if user.profile == event.organizer %}
-            <h3><a href="{% url 'localevents:event_update' pk=event.pk %}">Update</a></h3>
-        {% else %}
-            {% if event.event_capacity > current_signups %}
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <!--<input type="submit" value="Submit" name="registered_user_signup">-->
-                    <button type="submit" name="registered_user_signup">Submit</button>
-                </form>
-            {% endif %}
-        {% endif %}
-    {% else %}
-        {% if event.event_capacity > current_signups %}
-            <h3><a href="{% url 'localevents:event_signup' pk=event.pk %}">Sign up</a></h3>
-        {% endif %}
-    {% endif %}
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Update event">
+    </form>
+
 {% endblock %}

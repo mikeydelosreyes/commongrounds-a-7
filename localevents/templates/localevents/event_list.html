@@ -4,9 +4,29 @@
 {% block header %}<h1>Event List</h1>{% endblock %}
 {% block content %}
     <ul>
-        {% for event in event_list %}
-            <li><a href ="{{ event.get_absolute_url }}">
-            {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
-        {% endfor %}
+        {% if user.is_authenticated %}
+            <h3>Your created events</h3>
+            {% for event in created_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+            <h3>Your signed up events</h3>
+            {% for event in signedup_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+            <h3>Other events</h3>
+            {% for event in other_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+        {% else %}
+            {% for event in all_events %}
+                <li><a href ="{{ event.get_absolute_url }}">
+                {{ event.title }} - {{ event.created_on|date:"Y-m-d" }}</a></li>
+            {% endfor %}
+        {% endif %}
     </ul>
+    <br>
+    <h3><a href="{% url 'localevents:event_create' %}">Create New Event</a></h3>
 {% endblock %}

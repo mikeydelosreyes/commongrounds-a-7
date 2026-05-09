@@ -1,10 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from .models import Profile
 from .forms import ProfileForm
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
@@ -22,3 +22,8 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy(
             "accounts:profile_update", kwargs={"username": self.kwargs["username"]}
         )
+
+
+    
+
+

@@ -8,6 +8,7 @@ class ProfileInLine(admin.StackedInline):
     model = Profile
     can_delete = False
 
+
 class UserAdmin(BaseUserAdmin):
     inlines = [ProfileInLine,]
     
