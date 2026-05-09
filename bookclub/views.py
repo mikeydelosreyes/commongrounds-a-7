@@ -56,7 +56,7 @@ class BookListView(ListView):
             ).distinct()
 
             grouped_books = (
-                books_bookmarked | books_reviewed
+                books_bookmarked | books_reviewed | books_contributed
             ).distinct()
             
             all_books = Book.objects.exclude(
