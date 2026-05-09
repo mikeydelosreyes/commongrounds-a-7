@@ -88,12 +88,6 @@ class CommissionDetailView(DetailView):
 
         open_manpower = total_manpower - accepted
 
-        if open_manpower <= 0:
-            commission.status = 'Full'
-        else:
-            commission.status = 'Open'
-        commission.save()
-
         ctx['jobs'] = jobs
         ctx['total_manpower'] = total_manpower
         ctx['open_manpower'] = max(0, open_manpower)
@@ -180,13 +174,19 @@ class CommissionUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
         form.instance.maker = self.request.user.profile
 
         if formset.is_valid():
-            if not self.object.jobs.exclude(status='2_FULL').exists():
-                self.object.status = "Full"
-            else:
-                self.object.status = "Open"
             self.object = form.save()
             formset.instance = self.object
             formset.save()
+
+            jobs = self.object.jobs.all()
+
+            if jobs.exists():
+                if not jobs.exclude(status='2_FULL').exists():
+                    self.object.status = 'Full'
+                else:
+                    self.object.status = "Open"
+            
+            self.object.save()
 
             return redirect('commissions:commission_detail', pk=self.object.pk)
         else:
