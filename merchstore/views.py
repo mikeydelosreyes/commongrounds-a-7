@@ -7,6 +7,10 @@ from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
 
+from accounts.models import Profile
+from accounts.mixins import RoleRequiredMixin
+from accounts.decorators import role_required
+
 from .models import *
 
 
@@ -19,17 +23,23 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
 
         if self.request.user.is_authenticated:
-            # posted products
-            user_products = Product.objects.filter(owner=self.request.user)
+            try:
+                user_profile = Profile.objects.get(user=self.request.user)
 
-            # other products
-            all_products = Product.objects.exclude(owner=self.request.user)
+                # products from this prof
+                user_products = Product.objects.filter(owner=user_profile)
 
-            context["user_products"] = user_products
-            context["all_products"] = all_products
+                # all other products
+                all_products = Product.objects.exclude(owner=user_profile)
+
+                context["user_products"] = user_products
+                context["all_products"] = all_products
+            except Profile.DoesNotExist:
+                # no prof
+                context["all_products"] = Product.objects.all()
         else:
             # not logged in
-            context["all_products"] = Product.objects.all()
+            context["all_products"] = Product.objects.all()      
 
         # link to create 
         context["create_product_url"] = reverse_lazy("product_create")
@@ -90,21 +100,30 @@ class ProductDetailView(DetailView):
         context["form"] = form
         return self.render_to_response(context)
 
-class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
+    role_name = "Market Seller"
     model = Product
     template_name = "merchstore/item_form.html"
     context_object_name = "product_creator"
 
-    def form_valid(self, form):
-        # auto owner to logged-in
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-    
-    def test_func(self):
-       return hasattr(self.request.user, 
-                      "profile") and self.request.user.profile.role == "Market Seller"
+    fields = ["name", "product_type", "product_image", "price", "stock", "status"]
 
-class ProductUpdateView(UpdateView):
+    def form_valid(self, form):
+        # Set owner automatically to logged-in user's Profile
+        form.instance.owner = Profile.objects.get(user=self.request.user)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the logged-in user's Profile to the template for display
+        try:
+            context["owner_profile"] = Profile.objects.get(user=self.request.user)
+        except Profile.DoesNotExist:
+            context["owner_profile"] = None
+        return context
+
+class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
+    role_name = "Market Seller"
     model = Product
     template_name = "merchstore/item_form.html"
     fields = ["name", "product_type", "description", "price", "stock", "status"]
@@ -122,18 +141,19 @@ class ProductUpdateView(UpdateView):
         product.save()
         return super().form_valid(form)
 
-    def test_func(self):
-        # market seller code
-        return hasattr(self.request.user, "profile") and self.request.user.profile.role == "Market Seller"
-
 class CartView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = "merchstore/cart.html"
-    context_object_name = "transactions"
+    context_object_name = "cart"
 
     def get_queryset(self):
-        # buyer = user
-        return Transaction.objects.filter(buyer=self.request.user)
+        try:
+            # converter
+            user_profile = Profile.objects.get(user=self.request.user)
+            return Transaction.objects.filter(Buyer=user_profile)
+        except Profile.DoesNotExist:
+            # empty query
+            return Transaction.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -152,11 +172,15 @@ class CartView(LoginRequiredMixin, ListView):
     
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
-    template_name = "merchstore/transaction_list.html"
+    template_name = "merchstore/transactions.html"
     context_object_name = "transactions"
 
     def get_queryset(self):
-        return Transaction.objects.filter(product__owner=self.request.user)
+        try:
+            user_profile = Profile.objects.get(user=self.request.user)
+            return Transaction.objects.filter(Product_Bought__owner=user_profile)
+        except Profile.DoesNotExist:
+            return Transaction.objects.none()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
