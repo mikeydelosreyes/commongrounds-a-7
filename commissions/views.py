@@ -37,7 +37,7 @@ class CommissionListView(ListView):
             current_profile = Profile.objects.get(user=self.request.user)
             created_commissions = qs.filter(maker=current_profile)
             applied_commissions = qs.filter(
-                jobs__applications__applicant=current_profile)
+                jobs__applications__applicant=current_profile).distinct()
             other_commissions = qs.exclude(
                     id__in=created_commissions).exclude(
                     id__in=applied_commissions)
