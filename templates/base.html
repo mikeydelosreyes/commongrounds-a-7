@@ -15,9 +15,12 @@
             </button>
         </form>
     {% else %}
-        <button type="submit" style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
-        <h3>Login</h3>
-        </button>
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <button type="submit" style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
+            <h3>Login</h3>
+            </button>
+        </form>
     {% endif %}
     {% block header %}{% endblock %}
     <div id="content">
