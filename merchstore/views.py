@@ -51,8 +51,8 @@ class ProductDetailView(DetailView):
         if self.request.user.is_authenticated:
             try:
                 user_profile = Profile.objects.get(user=self.request.user)
-
-                # if logged-in user is not the owner
+    
+                # if logged-in not owner
                 if product.owner != user_profile:
                     context["form"] = Transaction()
                 else:
@@ -61,7 +61,7 @@ class ProductDetailView(DetailView):
                         "product_update", kwargs={"pk": product.pk}
                     )
             except Profile.DoesNotExist:
-                # no Profile exists for this user
+                # no Profile
                 context["form"] = None
         else:
             context["form"] = None
@@ -79,7 +79,7 @@ class ProductDetailView(DetailView):
             transaction = form.save(commit=False)
             transaction.Product_Bought = product
             transaction.Buyer = Profile.objects.get(user=request.user)
-            transaction.save()  # Observer (signal) will handle stock update
+            transaction.save()
             return redirect("cart_view")
 
         context = self.get_context_data()
@@ -95,13 +95,13 @@ class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     fields = ["name", "product_type", "product_image", "price", "stock", "status"]
 
     def form_valid(self, form):
-        # Set owner automatically to logged-in user's Profile
+
         form.instance.owner = Profile.objects.get(user=self.request.user)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the logged-in user's Profile to the template for display
+
         try:
             context["owner_profile"] = Profile.objects.get(user=self.request.user)
         except Profile.DoesNotExist:
