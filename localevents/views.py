@@ -32,7 +32,7 @@ class EventDetailView(DetailView):
     model = Event
     template_name = "localevents/event_detail.html"
 
-    def get_context_data(self, **kwargs): #change the link
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         event = Event.objects.get(pk=self.kwargs['pk'])
         context['form'] = RegisteredUserEventSignupForm()
