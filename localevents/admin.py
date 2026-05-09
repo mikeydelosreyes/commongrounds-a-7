@@ -11,6 +11,10 @@ class EventTypeAdmin(admin.ModelAdmin):
     inlines = [EventInLine,]
 
 
+class EventSignupInLine(admin.TabularInline):
+    model = EventSignup
+
+
 class EventAdmin(admin.ModelAdmin):
     model = Event
 
@@ -32,6 +36,9 @@ class EventAdmin(admin.ModelAdmin):
             ]
         }),
     ]
+
+    inlines = [EventSignupInLine,]
+
 
 admin.site.register(EventType, EventTypeAdmin)
 admin.site.register(Event, EventAdmin)
