@@ -3,13 +3,8 @@ from django.shortcuts import render
 from django.views.generic.edit import UpdateView, CreateView
 from .models import Profile
 from .forms import ProfileForm
-<<<<<<< HEAD
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-=======
-from django.urls import reverse_lazy
-
->>>>>>> diyprojects
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
