@@ -20,13 +20,12 @@ class EventListView(ListView):
             context["all_events"] = Event.objects.all()
         else:
             profile = Profile.objects.get(user=self.request.user)
-            users_signups = EventSignup.objects.get(user_registrant=profile)
             context["created_events"] = Event.objects.filter(organizer=profile).distinct()
             #FIX SOURCE: https://docs.djangoproject.com/en/6.0/ref/models/querysets/
             #want to get the user, specifically the profile
             #Event->Singedup->Profile and then back
-            context["signedup_events"] = Event.objects.filter()            
-            context["other_events"] = Event.objects.exclude(organizer=profile, )
+            context["signedup_events"] = Event.objects.filter(events__user_registrant=profile).distinct()        
+            context["other_events"] = Event.objects.exclude(organizer=profile).exclude(events__user_registrant=profile)
                                                     
         return context
     
@@ -62,11 +61,13 @@ class EventDetailView(DetailView):
             profile = self.request.user.profile
 
         if action == "sign_up":
+            print("Hello World")
             if user.is_authenticated:
                 EventSignup.objects.create(event=event, user_registrant = profile)
+            else:
+                return redirect('localevents:event_signup', pk=event.pk)
 
         return redirect('localevents:event_detail', pk=event.pk)
-
     
     def get_success_url(self):
         return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.kwargs['pk']})

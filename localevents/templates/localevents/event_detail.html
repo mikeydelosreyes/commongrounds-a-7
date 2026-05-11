@@ -25,10 +25,10 @@
             <h3><a href="{% url 'localevents:event_update' pk=event.pk %}">Update</a></h3>
         {% else %}
             {% if event.event_capacity > current_signups %}
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" >
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" name="sign_up">Sign up</button>
+                    <button type="submit" name='action' value='sign_up'>Sign up</button>
                 </form>
             {% endif %}
         {% endif %}
