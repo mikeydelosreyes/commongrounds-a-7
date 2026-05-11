@@ -4,6 +4,11 @@
 
 {% block content %}
   <h2>{{ product.name }}</h2>
+
+  {% if product.product_image %}
+    <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
+  {% endif %}
+
   <p>{{ product.description }}</p>
   <p><strong>Price:</strong> {{ product.price }}</p>
   <p><strong>Stock:</strong> {{ product.stock }}</p>
