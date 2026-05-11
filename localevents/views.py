@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from .forms import *
 from .models import *
 from accounts.mixins import *
+from accounts.decorators import *
 
 
 class EventListView(ListView): 
@@ -19,11 +20,12 @@ class EventListView(ListView):
         if not self.request.user.is_authenticated:
             context["all_events"] = Event.objects.all()
         else:
-            users_signups = EventSignup.objects.filter(user_registrant__user=self.request.user)
-            context["created_events"] = Event.objects.filter(organizer__user=self.request.user)
-            #FIX SOURCE: https://docs.djangoproject.com/en/6.0/ref/models/querysets/
-            context["signedup_events"] = users_signups.select_related("event").all()
-            context["other_events"] = Event.objects.exclude(organizer__user=self.request.user).exclude(id__in=users_signups.select_related("event").all())
+            profile = Profile.objects.get(user=self.request.user)
+            context["created_events"] = Event.objects.filter(organizer=profile).distinct()
+            #want to get the user, specifically the profile
+            #Event->Singedup->Profile and then back
+            context["signedup_events"] = Event.objects.filter(events__user_registrant=profile).distinct()        
+            context["other_events"] = Event.objects.exclude(organizer=profile).exclude(events__user_registrant=profile)
                                                     
         return context
     
@@ -32,38 +34,46 @@ class EventDetailView(DetailView):
     model = Event
     template_name = "localevents/event_detail.html"
 
-    def get_context_data(self, **kwargs): #change the link
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = Event.objects.get(pk=self.kwargs['pk'])
-        context['form'] = RegisteredUserEventSignupForm()
-        context['current_signups'] = EventSignup.objects.filter(event=event).count()
+        user = self.request.user
+        event = self.get_object()
+        organizer = event.organizer
+
+        if user.is_authenticated and user.profile == organizer:
+            context["is_organizer"] = True
+
+        else:
+            context["is_organizer"] = False
+
+        context["is_authenticated"] = user.is_authenticated
+        context["form"] = RegisteredUserEventSignupForm()
+        context["current_signups"] = EventSignup.objects.filter(event=event).count()
         return context
 
-
     def post(self, request, *args, **kwargs):
-        event = self.get_object()      
-        profile = request.user.profile
+        user = self.request.user
+        event = self.get_object()
+        action = request.POST.get("action")
 
-        if 'registered_user_signup' in request.POST:
-            form = RegisteredUserEventSignupForm(request.POST)
-            if form.is_valid():
-                #existing user signup automatic
-                form.event = event
-                form.save(commit=False)
-                form.user_registrant = profile
-                form.save()
-                return redirect(self.get_success_url())
-                    
+        if user.is_authenticated:
+            profile = self.request.user.profile
 
-        return redirect(self.get_success_url())
+        if action == "sign_up":
+            print("Hello World")
+            if user.is_authenticated:
+                EventSignup.objects.create(event=event, user_registrant = profile)
+            else:
+                return redirect('localevents:event_signup', pk=event.pk)
 
+        return redirect('localevents:event_detail', pk=event.pk)
     
     def get_success_url(self):
         return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.kwargs['pk']})
 
 
 #FIX LATER: https://stackoverflow.com/questions/18246326/how-do-i-set-user-field-in-form-to-the-currently-logged-in-user
-class EventCreateView(LoginRequiredMixin, CreateView):
+class EventCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     role_name = "Event Organizer"
@@ -72,14 +82,10 @@ class EventCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         return context
 
-
     def form_valid(self, form):
-        #FIX LATER: https://stackoverflow.com/questions/17872441/django-createview-gives-an-error-needs-to-have-a-value-for-field-before-t
-        #Daniel Roseman
         form.save()
         form.instance.organizer = Profile.objects.get(user=self.request.user)
         return super().form_valid(form)
-    
     
     def get_success_url(self):
         return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.object.pk })
@@ -90,7 +96,6 @@ class EventUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     form_class = EventForm
     template_name = "localevents/event_update.html"
     role_name = "Event Organizer"
-
 
     def form_valid(self, form):
         #if event is full
@@ -123,4 +128,14 @@ def event_signup_process(request, pk):
     return render(request, "localevents/event_signup.html", {
         "event": event,
         "form": form,
+    })
+
+
+@role_required('Event Organizer')
+def event_locations(request):
+    
+    events = Event.objects.all()
+
+    return render(request, "localevents/event_locations.html", {
+        "events": events,
     })

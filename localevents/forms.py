@@ -1,6 +1,6 @@
 from django import forms
-
 from .models import *
+
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -15,6 +15,7 @@ class EventForm(forms.ModelForm):
                 attrs={ 'type': 'datetime-local' }
             )
         }
+
 
 class NewUserEventSignupForm(forms.ModelForm):
     class Meta:
