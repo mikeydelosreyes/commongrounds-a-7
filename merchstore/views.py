@@ -185,10 +185,18 @@ class TransactionListView(LoginRequiredMixin, ListView):
 
         grouped_transactions = {}
         for tx in transactions:
-            buyer = tx.buyer
+            buyer = tx.Buyer
             if buyer not in grouped_transactions:
-                grouped_transactions[buyer] = []
-            grouped_transactions[buyer].append(tx)
+                grouped_transactions[buyer] = {}
+
+            product = tx.Product_Bought
+            if product in grouped_transactions[buyer]:
+                grouped_transactions[buyer][product]["quantity"] += tx.Amount
+            else:
+                grouped_transactions[buyer][product] = {
+                    "product": product,
+                    "quantity": tx.Amount,
+                }
 
         context["grouped_transactions"] = grouped_transactions
         return context
