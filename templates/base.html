@@ -16,20 +16,12 @@
             </button>
         </form>
     {% else %}
-<<<<<<< HEAD
-        <button 
-        onclick="window.location.href='{% url 'login' %}'" 
-        style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
-        Login
-        </button>
-=======
         <form method="POST" action="{% url 'login' %}">
             {% csrf_token %}
             <button type="submit" style="border:none;background:none;padding:0;color:blue;cursor:pointer;">
             <h3>Login</h3>
             </button>
         </form>
->>>>>>> commissions
     {% endif %}
     {% block header %}{% endblock %}
     <div id="content">
