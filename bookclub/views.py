@@ -83,6 +83,7 @@ class BookDetailView(DetailView):
         user=self.request.user
         book = self.get_object()
         context["is_authenticated"] = user.is_authenticated
+        context["bookmarknumbers"] = Bookmark.objects.filter(bookmarked_book=book).count()
 
         if not user.is_authenticated:
             context["is_bookmarked"] = False
