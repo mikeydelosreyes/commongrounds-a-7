@@ -6,12 +6,12 @@
     <h2>Your Cart</h2>
 
     {% for owner, cart_view in grouped_transactions.items %}
-        <h3>Seller: {{ owner.username }}</h3>
+        <h3>Seller: {{ owner.user.username }}</h3>
         <ul>
             {% for tx in cart_view %}
                 <li>
-                    {{ tx.product.name }} - {{ tx.get_status_display }}
-                    (Quantity: {{ tx.quantity }})
+                    {{ tx.Product_Bought.name }} - {{ tx.get_status_display }}
+                    (Quantity: {{ tx.Amount }})
                 </li>
             {% endfor %}
         </ul>
@@ -19,4 +19,3 @@
         <p>No transactions yet.</p>
     {% endfor %}
 {% endblock %}
-
