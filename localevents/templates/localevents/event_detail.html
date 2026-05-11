@@ -17,6 +17,7 @@
         <li>Status: {{ event.status }}</li>
         <li>Created: {{ event.created_on|date:"Y-m-d"}}</li>
         <li>Last updated: {{ event.updated_on|date:"Y-m-d"}}</li>
+        <li>Current signups: {{ current_signups }}</li>
     </ul>
     <br>
     {% if user.is_authenticated %}
@@ -24,11 +25,10 @@
             <h3><a href="{% url 'localevents:event_update' pk=event.pk %}">Update</a></h3>
         {% else %}
             {% if event.event_capacity > current_signups %}
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <!--<input type="submit" value="Submit" name="registered_user_signup">-->
-                    <button type="submit" name="registered_user_signup">Submit</button>
+                    <button type="submit" name="sign_up">Sign up</button>
                 </form>
             {% endif %}
         {% endif %}

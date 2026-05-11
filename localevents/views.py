@@ -35,30 +35,37 @@ class EventDetailView(DetailView):
     model = Event
     template_name = "localevents/event_detail.html"
 
-    def get_context_data(self, **kwargs): #change the link
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        event = Event.objects.get(pk=self.kwargs['pk'])
-        context['form'] = RegisteredUserEventSignupForm()
-        context['current_signups'] = EventSignup.objects.filter(event=event).count()
+        user = self.request.user
+        event = self.get_object()
+        organizer = event.organizer
+
+        if user.is_authenticated and user.profile == organizer:
+            context["is_organizer"] = True
+
+        else:
+            context["is_organizer"] = False
+
+        context["is_authenticated"] = user.is_authenticated
+        context["form"] = RegisteredUserEventSignupForm()
+        context["current_signups"] = EventSignup.objects.filter(event=event).count()
         return context
 
 
     def post(self, request, *args, **kwargs):
-        event = self.get_object()      
-        profile = request.user.profile
+        user = self.request.user
+        event = self.get_object()
+        action = request.POST.get("action")
 
-        if 'registered_user_signup' in request.POST:
-            form = RegisteredUserEventSignupForm(request.POST)
-            if form.is_valid():
-                #existing user signup automatic
-                form.event = event
-                form.save(commit=False)
-                form.user_registrant = profile
-                form.save()
-                return redirect(self.get_success_url())
-                    
+        if user.is_authenticated:
+            profile = self.request.user.profile
 
-        return redirect(self.get_success_url())
+        if action == "sign_up":
+            if user.is_authenticated:
+                EventSignup.objects.create(event=event, user_registrant = profile)
+
+        return redirect('localevents:event_detail', pk=event.pk)
 
     
     def get_success_url(self):
