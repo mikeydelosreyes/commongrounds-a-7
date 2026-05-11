@@ -3,19 +3,19 @@
 {% block title %}Your Cart{% endblock %}
 
 {% block content %}
-    <h2>Your Cart</h2>
+  <h2>Your Cart</h2>
 
-    {% for owner, cart_view in grouped_transactions.items %}
-        <h3>Seller: {{ owner.user.username }}</h3>
-        <ul>
-            {% for tx in cart_view %}
-                <li>
-                    {{ tx.Product_Bought.name }} - {{ tx.get_status_display }}
-                    (Quantity: {{ tx.Amount }})
-                </li>
-            {% endfor %}
-        </ul>
-    {% empty %}
-        <p>No transactions yet.</p>
-    {% endfor %}
+  {% for owner, products in grouped_transactions.items %}
+    <h3>Seller: {{ owner.user.username }}</h3>
+    <ul>
+      {% for product_data in products.values %}
+        <li>
+          {{ product_data.product.name }} - {{ product_data.status }}
+          (Quantity: {{ product_data.quantity }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% empty %}
+    <p>No transactions yet.</p>
+  {% endfor %}
 {% endblock %}
