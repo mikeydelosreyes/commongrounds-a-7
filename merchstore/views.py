@@ -28,15 +28,20 @@ class ProductListView(ListView):
 
         if self.request.user.is_authenticated:
             try:
-                context["user_products"] = OwnProductsStrategy().filter(self.request.user)
-                context["all_products"] = OtherProductsStrategy().filter(self.request.user)
+                context["user_products"] = OwnProductsStrategy().filter(
+                    self.request.user)
+                context["all_products"] = OtherProductsStrategy().filter(
+                    self.request.user)
             except Profile.DoesNotExist:
-                context["all_products"] = AllProductsStrategy().filter(self.request.user)
+                context["all_products"] = AllProductsStrategy().filter(
+                    self.request.user)
         else:
-            context["all_products"] = AllProductsStrategy().filter(self.request.user)
+            context["all_products"] = AllProductsStrategy().filter(
+                self.request.user)
 
         context["create_product_url"] = reverse_lazy("product_create")
         return context
+
 
 class ProductDetailView(DetailView):
     model = Product
@@ -56,7 +61,8 @@ class ProductDetailView(DetailView):
                 context["can_buy"] = product.stock > 0
             else:
                 context["form"] = None
-                context["edit_url"] = reverse_lazy("product_update", kwargs={"pk": product.pk})
+                context["edit_url"] = reverse_lazy(
+                    "product_update", kwargs={"pk": product.pk})
         else:
             context["form"] = None
             context["can_buy"] = False
@@ -90,13 +96,20 @@ class ProductDetailView(DetailView):
         context["form"] = form
         return self.render_to_response(context)
 
+
 class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     role_name = "Market Seller"
     model = Product
     template_name = "merchstore/item_form.html"
     context_object_name = "product_creator"
 
-    fields = ["name", "product_type", "product_image", "price", "stock", "status"]
+    fields = [
+        "name",
+        "product_type",
+        "product_image",
+        "price",
+        "stock",
+        "status"]
 
     def form_valid(self, form):
 
@@ -107,16 +120,24 @@ class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         try:
-            context["owner_profile"] = Profile.objects.get(user=self.request.user)
+            context["owner_profile"] = Profile.objects.get(
+                user=self.request.user)
         except Profile.DoesNotExist:
             context["owner_profile"] = None
         return context
+
 
 class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     role_name = "Market Seller"
     model = Product
     template_name = "merchstore/item_form.html"
-    fields = ["name", "product_type", "description", "price", "stock", "status"]
+    fields = [
+        "name",
+        "product_type",
+        "description",
+        "price",
+        "stock",
+        "status"]
     context_object_name = "product_updator"
 
     def form_valid(self, form):
@@ -129,6 +150,7 @@ class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
 
         product.save()
         return super().form_valid(form)
+
 
 class CartView(LoginRequiredMixin, ListView):
     model = Transaction
@@ -143,7 +165,7 @@ class CartView(LoginRequiredMixin, ListView):
         except Profile.DoesNotExist:
             # empty query
             return Transaction.objects.none()
-        
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         transactions = self.get_queryset()
@@ -166,7 +188,8 @@ class CartView(LoginRequiredMixin, ListView):
 
         context["grouped_transactions"] = grouped_transactions
         return context
-    
+
+
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
     template_name = "merchstore/transactions.html"
@@ -175,7 +198,8 @@ class TransactionListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         try:
             user_profile = Profile.objects.get(user=self.request.user)
-            return Transaction.objects.filter(Product_Bought__owner=user_profile)
+            return Transaction.objects.filter(
+                Product_Bought__owner=user_profile)
         except Profile.DoesNotExist:
             return Transaction.objects.none()
 
