@@ -74,7 +74,7 @@ class EventDetailView(DetailView):
 
 
 #FIX LATER: https://stackoverflow.com/questions/18246326/how-do-i-set-user-field-in-form-to-the-currently-logged-in-user
-class EventCreateView(LoginRequiredMixin, CreateView):
+class EventCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     role_name = "Event Organizer"
