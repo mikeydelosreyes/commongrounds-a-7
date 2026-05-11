@@ -6,7 +6,7 @@ def role_required(role_name):
     def decorator(view):
         @wraps(view)
         def _wrapped_view(request, *args, **kwargs):
-            if not request.user.role == role_name:
+            if not request.user.profile.role == role_name:
                 return redirect("/accounts/login")
             return view(request, *args, **kwargs)
         return _wrapped_view

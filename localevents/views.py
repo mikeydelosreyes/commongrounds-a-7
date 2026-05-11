@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from .forms import *
 from .models import *
 from accounts.mixins import *
+from accounts.decorators import *
 
 
 class EventListView(ListView): 
@@ -134,4 +135,14 @@ def event_signup_process(request, pk):
     return render(request, "localevents/event_signup.html", {
         "event": event,
         "form": form,
+    })
+
+
+@role_required('Event Organizer')
+def event_locations(request):
+    
+    events = Event.objects.all()
+
+    return render(request, "localevents/event_locations.html", {
+        "events": events,
     })
