@@ -21,7 +21,8 @@ class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Details', {
             'fields': [
-                ('title', 'description', 'materials', 'steps'), 'category', 'creator'
+                ('title', 'description', 'materials',
+                 'steps'), 'category', 'creator'
             ]
         }),
     ]
@@ -38,7 +39,6 @@ class ProjectReviewAdmin(admin.ModelAdmin):
     model = ProjectReview
     list_display = ('project', 'reviewer', 'comment')
     search_fields = ('project__title',)
-
 
 
 admin.site.register(Profile)

@@ -11,21 +11,24 @@ class ProjectListView(ListView):
     model = Project
     template_name = 'diyprojects/project_list.html'
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all().distinct()
         if self.request.user.is_authenticated:
             profile = self.request.user.profile
-            context['created'] = Project.objects.filter(creator=profile).distinct()
-            context['favorites'] = Project.objects.filter(favorites__profile=profile).distinct()
-            context['reviewed'] = Project.objects.filter(reviews__reviewer=profile).distinct()
+            context['created'] = Project.objects.filter(
+                creator=profile).distinct()
+            context['favorites'] = Project.objects.filter(
+                favorites__profile=profile).distinct()
+            context['reviewed'] = Project.objects.filter(
+                reviews__reviewer=profile).distinct()
 
-            context['projects'] = Project.objects.exclude(creator=profile
-                                                ).exclude(favorites__profile=profile
-                                                ).exclude(reviews__reviewer=profile).distinct()
+            context['projects'] = Project.objects.exclude(
+                Q(creator=profile) |
+                Q(favorites__profile=profile) |
+                Q(reviews__reviewer=profile)
+            ).distinct()
         return context
-
 
 
 class ProjectDetailView(DetailView):
@@ -36,58 +39,55 @@ class ProjectDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         project = self.get_object()
         context['favorites'] = project.favorites.count()
-        context['average_score'] = project.ratings.aggregate(Avg('score'))['score__avg']
+        context['average_score'] = project.ratings.aggregate(Avg('score'))[
+            'score__avg']
         context['rating_form'] = ProjectRatingForm()
         context['review_form'] = ProjectReviewForm()
         context['reviews'] = project.reviews.all()
         if self.request.user.is_authenticated:
-            context['is_favorited'] = project.favorites.filter(profile=self.request.user.profile).exists()
+            context['is_favorited'] = project.favorites.filter(
+                profile=self.request.user.profile).exists()
         return context
-    
+
     def post(self, request, *args, **kwargs):
-        project = self.get_object()       
+        project = self.get_object()
         profile = request.user.profile
 
-
         if 'check_favorite' in request.POST:
-            get_favorite = Favorite.objects.filter(project=project, profile=profile)
+            get_favorite = Favorite.objects.filter(
+                project=project, profile=profile)
 
             if get_favorite.exists():
                 get_favorite.delete()
             else:
-                Favorite.objects.create(project=project, profile=profile)                
+                Favorite.objects.create(project=project, profile=profile)
             return redirect(self.get_success_url())
 
-
-        
         if 'submit_rating' in request.POST:
             rating = ProjectRatingForm(request.POST)
 
             if rating.is_valid():
-                get_rating = project.ratings.filter(project=project, profile=profile)
+                get_rating = project.ratings.filter(
+                    project=project, profile=profile)
 
                 if get_rating.exists():
-                    get_rating.update(score = rating.instance.score)
+                    get_rating.update(score=rating.instance.score)
                 else:
-                    ProjectRating.objects.create(project=project, profile=profile, score = rating.instance.score)
+                    ProjectRating.objects.create(
+                        project=project, profile=profile, score=rating.instance.score)
                 return redirect(self.get_success_url())
-            
+
             return redirect(self.get_success_url())
-
-
 
         if 'submit_review' in request.POST:
             review = ProjectReviewForm(request.POST, request.FILES)
             if review.is_valid():
-                ProjectReview.objects.create(project=project, reviewer=profile, comment = review.instance.comment,
-                                                                                image = review.instance.image)
+                ProjectReview.objects.create(project=project, reviewer=profile, comment=review.instance.comment,
+                                             image=review.instance.image)
             return redirect(self.get_success_url())
-    
 
     def get_success_url(self):
         return reverse_lazy('diyprojects:project_detail', kwargs={'pk': self.kwargs['pk']})
-    
-
 
 
 class ProjectCreateView(CreateView):
@@ -96,16 +96,14 @@ class ProjectCreateView(CreateView):
     template_name = "diyprojects/project_form.html"
     form_class = ProjectForm
 
-
     def test_func(self):
         return self.request.user.profile.role == "Project Creator"
 
     def form_valid(self, form):
         form.instance.creator = self.request.user.profile
-        return super().form_valid(form)   
+        return super().form_valid(form)
 
-    
-    
+
 class ProjectUpdateView(UpdateView):
     role_required = "Project Creator"
     model = Project

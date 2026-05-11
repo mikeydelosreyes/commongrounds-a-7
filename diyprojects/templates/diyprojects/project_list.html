@@ -3,43 +3,43 @@
 
 {% block header %}<h1>Project List</h1>{% endblock %}
 {% block content %}
-    <ul>
-        <h3>Created Projects</h3>
-        {% for create in created %}
-            <li>
-                <a href="{{create.get_absolute_url}}">
-                {{create.title}} - {{ create.created_on|date:"Y-m-d"}}</a>
-            </li>
-        {% endfor %}
-        <h3>Favorites</h3>
-        {% for favorite in favorites %}
-            <li>
-                <a href="{{favorite.get_absolute_url}}">
-                {{favorite.title}} - {{ favorite.created_on|date:"Y-m-d"}}</a>
-            </li>
-        {% endfor %}
-        <h3>Reviewed Projects</h3>
-        {% for review in reviewed %}
-            <li>
-                <a href="{{review.get_absolute_url}}">
-                {{review.title}} - {{ review.created_on|date:"Y-m-d"}}</a>
-            </li>
-        {% endfor %}
-        <br>
-        <br>
-        <h2>All Projects</h2>
-        {% for project in projects %}
-            <li>                
-                <a href="{{project.get_absolute_url}}">
-                {{project.title}} - {{ project.created_on|date:"Y-m-d"}}</a>                
-            </li>
-        {% endfor %}
-        <br>
-        <br>
-        {% if request.user.is_authenticated and request.user.profile.role == "Project Creator" %}
-            <h2><a href="{% url 'diyprojects:project_create' %}">Create Project</a></h2>
-        {% endif %}
-    </ul>
+<ul>
+    <h3>Created Projects</h3>
+    {% for create in created %}
+    <li>
+        <a href="{{create.get_absolute_url}}">
+            {{create.title}} - {{ create.created_on|date:"Y-m-d"}}</a>
+    </li>
+    {% endfor %}
+    <h3>Favorites</h3>
+    {% for favorite in favorites %}
+    <li>
+        <a href="{{favorite.get_absolute_url}}">
+            {{favorite.title}} - {{ favorite.created_on|date:"Y-m-d"}}</a>
+    </li>
+    {% endfor %}
+    <h3>Reviewed Projects</h3>
+    {% for review in reviewed %}
+    <li>
+        <a href="{{review.get_absolute_url}}">
+            {{review.title}} - {{ review.created_on|date:"Y-m-d"}}</a>
+    </li>
+    {% endfor %}
+    <br>
+    <br>
+    <h2>All Projects</h2>
+    {% for project in projects %}
+    <li>
+        <a href="{{project.get_absolute_url}}">
+            {{project.title}} - {{ project.created_on|date:"Y-m-d"}}</a>
+    </li>
+    {% endfor %}
+    <br>
+    <br>
+    {% if request.user.is_authenticated and request.user.profile.role == "Project Creator" %}
+    <h2><a href="{% url 'diyprojects:project_create' %}">Create Project</a></h2>
+    {% endif %}
+</ul>
 
-    
+
 {% endblock %}
