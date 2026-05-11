@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookclub',
+    'commissions',
+    'diyprojects',
+    'localevents',
+    'merchstore',
 ]
 
 MIDDLEWARE = [
