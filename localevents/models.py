@@ -4,6 +4,7 @@ from django.core.validators import *
 from django.urls import *
 from accounts.models import Profile
 
+
 class EventType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -70,6 +71,7 @@ class EventSignup(models.Model):
     user_registrant = models.ForeignKey(Profile, on_delete=models.SET_NULL,
                                   related_name='user_registrants', null=True, blank=True)
     new_registrant = models.CharField(max_length=255, null=True, blank=True)
+
 
     class Meta:
         verbose_name = 'eventsignup'

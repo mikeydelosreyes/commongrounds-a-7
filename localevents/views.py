@@ -22,7 +22,6 @@ class EventListView(ListView):
         else:
             profile = Profile.objects.get(user=self.request.user)
             context["created_events"] = Event.objects.filter(organizer=profile).distinct()
-            #FIX SOURCE: https://docs.djangoproject.com/en/6.0/ref/models/querysets/
             #want to get the user, specifically the profile
             #Event->Singedup->Profile and then back
             context["signedup_events"] = Event.objects.filter(events__user_registrant=profile).distinct()        
@@ -51,7 +50,6 @@ class EventDetailView(DetailView):
         context["form"] = RegisteredUserEventSignupForm()
         context["current_signups"] = EventSignup.objects.filter(event=event).count()
         return context
-
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
@@ -84,14 +82,10 @@ class EventCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         return context
 
-
     def form_valid(self, form):
-        #FIX LATER: https://stackoverflow.com/questions/17872441/django-createview-gives-an-error-needs-to-have-a-value-for-field-before-t
-        #Daniel Roseman
         form.save()
         form.instance.organizer = Profile.objects.get(user=self.request.user)
         return super().form_valid(form)
-    
     
     def get_success_url(self):
         return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.object.pk })
@@ -102,7 +96,6 @@ class EventUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     form_class = EventForm
     template_name = "localevents/event_update.html"
     role_name = "Event Organizer"
-
 
     def form_valid(self, form):
         #if event is full
