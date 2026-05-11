@@ -7,7 +7,7 @@ urlpatterns = [
     path('book/<int:pk>/', BookDetailView.as_view(), name='book_detail'),
     path("book/add", BookCreateView.as_view(), name='book_create'),
     path("book/<int:pk>/edit", BookUpdateView.as_view(), name='book_update'),
-    path("book/<int:pk>/borrow", BookBorrowView.as_view(), name='book_borrow'), 
+    path("book/<int:pk>/borrow", BookBorrowView.as_view(), name='book_borrow'),
 ]
 
 app_name = "bookclub"

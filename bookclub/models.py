@@ -10,7 +10,6 @@ class Genre(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
-
     class Meta:
         ordering = ['name']
         verbose_name = 'genre'
@@ -56,6 +55,7 @@ class Book(models.Model):
         verbose_name = 'book'
         verbose_name_plural = 'books'
 
+
 class BookReview(models.Model):
     UserReviewer = models.ForeignKey(
         Profile,
@@ -77,6 +77,7 @@ class BookReview(models.Model):
         verbose_name = 'review'
         verbose_name_plural = 'reviews'
 
+
 class Bookmark(models.Model):
     bookmark_profile = models.ForeignKey(
         Profile,
@@ -96,13 +97,12 @@ class Bookmark(models.Model):
         verbose_name = 'bookmark'
         verbose_name_plural = 'bookmarks'
 
-    
 
 class Borrow(models.Model):
     borrow_book = models.ForeignKey(
-        Book, 
+        Book,
         on_delete=models.CASCADE,
-        related_name="borrowed_book"    
+        related_name="borrowed_book"
     )
     borrower = models.ForeignKey(
         Profile,
@@ -117,8 +117,7 @@ class Borrow(models.Model):
 
     def get_absolute_url(self):
         return reverse('bookclub:book_borrow', args=[str(self.borrow_book.pk)])
-    
+
     class Meta:
         verbose_name = 'borrowed'
         verbose_name_plural = 'multiple_borrowed'
-
