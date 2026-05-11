@@ -1,21 +1,21 @@
-{% extends "merchstore/base_merchstore.html" % }
+{% extends "merchstore/base_merchstore.html" %}
 
-{% block title % }Your Sales Transactions{ % endblock % }
+{% block title %}Your Sales Transactions{% endblock %}
 
-{% block content % }
-    <h2 > Your Sales Transactions < /h2 >
+{% block content %}
+  <h2>Your Sales Transactions</h2>
 
-    {% for buyer, products in grouped_transactions.items % }
-        <h3 > Buyer: {{buyer.user.username}} < /h3 >
-        <ul >
-            {% for product, data in products.items % }
-               <li >
-                    {{product.name}}
-                    (Quantity: {{data.quantity}})
-                < /li >
-            { % endfor % }
-        < /ul >
-    { % empty % }
-        <p > No transactions yet.</p>
-    { % endfor % }
-{ % endblock % }
+  {% for buyer, products in grouped_transactions.items %}
+    <h3>Buyer: {{ buyer.user.username }}</h3>
+    <ul>
+      {% for product, data in products.items %}
+        <li>
+          {{ product.name }}
+          (Quantity: {{ data.quantity }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% empty %}
+    <p>No transactions yet.</p>
+  {% endfor %}
+{% endblock %}
