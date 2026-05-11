@@ -1,12 +1,37 @@
 {% extends 'merchstore/base_merchstore.html' %}
 {% load static %}
 
-{% block header %}<h1>Product List</h1>{% endblock %}
+{% block header %}
+  <h1>Product List</h1>
+{% endblock %}
+
 {% block content %}
+  <h2>All Products</h2>
+  <ul>
+    {% for product in all_products %}
+      <li>
+        <a href="item/{{ product.pk }}">
+        {{ product.name }} - {{ product.price }} 
+        (Owner: {{ product.owner.name }})
+        </a>
+      </li>
+    {% empty %}
+      <li>No products available.</li>
+    {% endfor %}
+  </ul>
+
+  {% if user_products %}
+    <h2>Your Products</h2>
     <ul>
-        {% for product in product_list %}
-            <li><a href ="{{ product.get_absolute_url }}">
-            {{ product.name }} - {{ product.price }}</a></li>
-        {% endfor %}
+      {% for product in user_products %}
+        <li>
+          {{ product.name }} - {{ product.price }}
+        </li>
+      {% empty %}
+        <li>You haven’t listed any products yet.</li>
+      {% endfor %}
     </ul>
+  {% endif %}
+
+  <p><a href="item/add">Create a new product</a></p>
 {% endblock %}
