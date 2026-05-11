@@ -25,7 +25,9 @@
     <ul>
       {% for product in user_products %}
         <li>
+          <a href="item/{{ product.pk }}">
           {{ product.name }} - {{ product.price }}
+          </a>
         </li>
       {% empty %}
         <li>You haven’t listed any products yet.</li>
