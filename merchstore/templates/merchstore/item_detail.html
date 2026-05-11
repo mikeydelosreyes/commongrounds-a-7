@@ -1,0 +1,31 @@
+{% extends "merchstore/base_merchstore.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+  <h2>{{ product.name }}</h2>
+
+  {% if product.product_image %}
+    <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
+  {% endif %}
+
+  <p>{{ product.description }}</p>
+  <p><strong>Price:</strong> {{ product.price }}</p>
+  <p><strong>Stock:</strong> {{ product.stock }}</p>
+
+  {% if form %}
+    <h3>Purchase this product</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      {% if can_buy %}
+        <button type="submit">Buy</button>
+      {% else %}
+        <button type="submit" disabled>Out of Stock</button>
+      {% endif %}
+    </form>
+  {% else %}
+    <p>You cannot purchase this product.</p>
+  {% endif %}
+{% endblock %}

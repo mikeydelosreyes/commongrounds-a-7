@@ -1,0 +1,21 @@
+{% extends "merchstore/base_merchstore.html" %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+  <h2>Your Cart</h2>
+
+  {% for owner, products in grouped_transactions.items %}
+    <h3>Seller: {{ owner.user.username }}</h3>
+    <ul>
+      {% for product_data in products.values %}
+        <li>
+          {{ product_data.product.name }} - {{ product_data.status }}
+          (Quantity: {{ product_data.quantity }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% empty %}
+    <p>No transactions yet.</p>
+  {% endfor %}
+{% endblock %}
