@@ -24,19 +24,19 @@ class EventType(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(EventType, on_delete=models.SET_NULL,
-                                  related_name='events', null=True)
-    organizer = models.ManyToManyField(Profile, null=True)
-    event_image = models.ImageField()
+                                  related_name='event_types', null=True)
+    organizer = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    event_image = models.ImageField(upload_to='images/', null=False)
     description = models.TextField()
     location = models.CharField(max_length=255)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     event_capacity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     #fix source: https://docs.djangoproject.com/en/6.0/ref/models/fields/
-    AVAILABLE = "AV"
-    FULL = "FL"
-    DONE = "DN"
-    CANCELLED = "CN"
+    AVAILABLE = "Available"
+    FULL = "Full"
+    DONE = "Done"
+    CANCELLED = "Cancelled"
     STATUS_CHOICES = {
         AVAILABLE: "Available",
         FULL: "Full",
@@ -44,7 +44,7 @@ class Event(models.Model):
         CANCELLED: "Cancelled",
     }
     status = models.CharField(
-        max_length=2,
+        max_length=63,
         choices=STATUS_CHOICES,
         default=AVAILABLE,
     )
@@ -67,5 +67,6 @@ class Event(models.Model):
 class EventSignup(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE,
                                   related_name='events', null=True)
-    #user_registrant TBA WITH ACCOUNTS
-    #new_registrant TBA WITH ACCOUNTS
+    user_registrant = models.ForeignKey(Profile, on_delete=models.SET_NULL,
+                                  related_name='user_registrants', null=True)
+    new_registrant = models.CharField(max_length=255, null=True)

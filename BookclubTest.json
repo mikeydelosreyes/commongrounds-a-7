@@ -1,0 +1,161 @@
+[
+    {"model":"bookclub.genre",
+    "pk":1,
+    "fields": {
+    "name":"Drama|Film-Noir|Thriller",
+    "description":"interdum mauris ullamcorper purus sit amet nulla quisque arcu libero"
+    }},
+    {"model":"bookclub.genre",
+    "pk":2,
+    "fields": {
+    "name":"Action|Adventure|Comedy",
+    "description":"ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae nulla dapibus dolor vel est donec odio"
+    }},
+    {"model":"bookclub.genre",
+     "pk":3,
+     "fields": {
+     "name":"Comedy|Drama|Romance",
+     "description":"quam pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere"}},
+    {"model":"bookclub.genre","pk":4,"name":"Drama|Western","description":"enim in tempor turpis nec euismod scelerisque quam turpis adipiscing lorem vitae mattis nibh ligula nec sem duis"},
+    {"model":"bookclub.genre","pk":5,"name":"Comedy|Mystery","description":"viverra dapibus nulla suscipit ligula in lacus curabitur at ipsum ac tellus semper interdum mauris ullamcorper purus"},
+    {
+    "model": "bookclub.book",
+    "pk": 1,
+    "fields": {
+      "title": "The Name of the Wind",
+      "genre": 1,
+      "author": "Patrick Rothfuss",
+      "sypnopsis": "The story of Kvothe, a legendary wizard, begins with his humble origins as a child of a traveling troupe of performers. Orphaned young and forced to survive on the streets, he eventually enters a prestigious university to learn the arcane arts, all while searching for the truth behind the mythical Chandrian who murdered his family.",
+      "publication_year": 2007,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 2,
+    "fields": {
+      "title": "Dune",
+      "genre": 2,
+      "author": "Frank Herbert",
+      "sypnopsis": "Set in the distant future, Dune follows young Paul Atreides as his noble family takes control of the desert planet Arrakis, the only source of the most valuable substance in the universe — the spice melange. Betrayal, prophecy, and ecology intertwine as Paul navigates a war for survival and destiny.",
+      "publication_year": 1965,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 3,
+    "fields": {
+      "title": "The Girl with the Dragon Tattoo",
+      "genre": 3,
+      "author": "Stieg Larsson",
+      "sypnopsis": "Journalist Mikael Blomkvist and hacker Lisbeth Salander join forces to investigate the forty-year-old disappearance of a wealthy patriarch's niece. Their search unravels dark secrets buried deep within a powerful Swedish family, leading them into dangerous territory.",
+      "publication_year": 2005,
+      "borrow_availability": false,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 4,
+    "fields": {
+      "title": "All the Light We Cannot See",
+      "genre": 4,
+      "author": "Anthony Doerr",
+      "sypnopsis": "Set during World War II, this novel follows Marie-Laure, a blind French girl, and Werner, a German soldier, whose paths converge in occupied France. Their intertwining stories reveal the cost of war, the power of human connection, and the fragile hope of survival.",
+      "publication_year": 2014,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 5,
+    "fields": {
+      "title": "Pride and Prejudice",
+      "genre": 5,
+      "author": "Jane Austen",
+      "sypnopsis": "Elizabeth Bennet navigates issues of manners, upbringing, morality, and marriage in early 19th-century England. Her complex relationship with the proud Mr. Darcy forms the heart of this beloved novel, which remains a cornerstone of romantic fiction.",
+      "publication_year": 1813,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 6,
+    "fields": {
+      "title": "Gone Girl",
+      "genre": 6,
+      "author": "Gillian Flynn",
+      "sypnopsis": "On the morning of their fifth wedding anniversary, Amy Dunne disappears. Her husband Nick becomes the prime suspect. Told in alternating voices, this thriller dismantles the perfect marriage to expose deeply buried secrets, manipulation, and obsession.",
+      "publication_year": 2012,
+      "borrow_availability": false,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 7,
+    "fields": {
+      "title": "The Hobbit",
+      "genre": 1,
+      "author": "J.R.R. Tolkien",
+      "sypnopsis": "Bilbo Baggins, a comfort-loving hobbit, is swept into an unexpected adventure by the wizard Gandalf and a company of dwarves. Their quest to reclaim the dwarves' mountain home from the dragon Smaug leads Bilbo through enchanted forests, goblin tunnels, and a fateful encounter with the creature Gollum.",
+      "publication_year": 1937,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 8,
+    "fields": {
+      "title": "Project Hail Mary",
+      "genre": 2,
+      "author": "Andy Weir",
+      "sypnopsis": "Ryland Grace wakes up alone on a spacecraft with no memory of how he got there. As he pieces together his forgotten mission, he realizes he may be humanity's last hope against an extinction-level threat. His only ally turns out to be an unexpected companion from another world.",
+      "publication_year": 2021,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 9,
+    "fields": {
+      "title": "And Then There Were None",
+      "genre": 3,
+      "author": "Agatha Christie",
+      "sypnopsis": "Ten strangers are lured to an isolated island mansion. One by one they are accused of past crimes and then murdered — each death mirroring a nursery rhyme. With no way off the island, the survivors must identify the killer before no one is left.",
+      "publication_year": 1939,
+      "borrow_availability": true,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "bookclub.book",
+    "pk": 10,
+    "fields": {
+      "title": "The Da Vinci Code",
+      "genre": 6,
+      "author": "Dan Brown",
+      "sypnopsis": "Harvard symbologist Robert Langdon is drawn into a deadly conspiracy after a curator is murdered inside the Louvre. Clues hidden in the works of Leonardo da Vinci lead Langdon and a cryptologist on a breathless chase across Europe to uncover a secret that could rock the foundations of Christianity.",
+      "publication_year": 2003,
+      "borrow_availability": false,
+      "created_on": "2026-01-01T00:00:00Z",
+      "updated_on": "2026-01-01T00:00:00Z"
+    }
+  }
+]

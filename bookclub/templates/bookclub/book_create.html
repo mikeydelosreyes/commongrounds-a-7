@@ -1,0 +1,10 @@
+{% extends 'bookclub/base_bookclub.html' %}
+{% load static %}
+{% block content %}
+<form method="post">
+{% csrf_token %}
+{{ form }}
+Contributer: {{contributor_name}}
+<input type="submit" value="Submit">
+</form>
+{% endblock %}
