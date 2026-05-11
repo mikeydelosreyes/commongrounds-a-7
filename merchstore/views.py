@@ -90,63 +90,6 @@ class ProductDetailView(DetailView):
         context["form"] = form
         return self.render_to_response(context)
 
-# class ProductDetailView(DetailView):
-
-#     model = Product
-#     template_name = "merchstore/item_detail.html"
-#     context_object_name = "product"
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         product = self.get_object()
-
-#         if self.request.user.is_authenticated:
-#             try:
-#                 user_profile = Profile.objects.get(user=self.request.user)
-    
-#                 # if logged-in not owner
-#                 if product.owner != user_profile:
-#                     context["form"] = Transaction()
-#                 else:
-#                     context["form"] = None
-#                     context["edit_url"] = reverse_lazy(
-#                         "product_update", kwargs={"pk": product.pk}
-#                     )
-#             except Profile.DoesNotExist:
-#                 # no Profile
-#                 context["form"] = None
-#         else:
-#             context["form"] = None
-
-#         return context
-
-
-    # def post(self, request, *args, **kwargs):
-    #     product = self.get_object()
-
-    #     if not request.user.is_authenticated:
-    #         return redirect_to_login(request.get_full_path())
-
-    #     profile, _ = Profile.objects.get_or_create(user=request.user)
-    #     form = TransactionForm(request.POST)
-
-    #     if form.is_valid():
-    #         transaction = form.save(commit=False)
-    #         transaction.Product_Bought = product
-    #         transaction.Buyer = profile
-
-    #         if product.stock >= transaction.Amount:
-    #             product.stock -= transaction.Amount
-    #             product.save()
-    #             transaction.save()
-    #             return redirect("cart_view")
-    #         else:
-    #             form.add_error("Amount", "Not enough stock available.")
-
-        context = self.get_context_data()
-        context["form"] = form
-        return self.render_to_response(context)
-
 class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     role_name = "Market Seller"
     model = Product
@@ -176,8 +119,6 @@ class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     fields = ["name", "product_type", "description", "price", "stock", "status"]
     context_object_name = "product_updator"
 
-    # success_url = reverse_lazy("product_list")
-
     def form_valid(self, form):
         product = form.save(commit=False)
 
@@ -202,18 +143,26 @@ class CartView(LoginRequiredMixin, ListView):
         except Profile.DoesNotExist:
             # empty query
             return Transaction.objects.none()
-
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         transactions = self.get_queryset()
 
-        # group transactions
         grouped_transactions = {}
         for tx in transactions:
             owner = tx.Product_Bought.owner
             if owner not in grouped_transactions:
-                grouped_transactions[owner] = []
-            grouped_transactions[owner].append(tx)
+                grouped_transactions[owner] = {}
+
+            product = tx.Product_Bought
+            if product in grouped_transactions[owner]:
+                grouped_transactions[owner][product]["quantity"] += tx.Amount
+            else:
+                grouped_transactions[owner][product] = {
+                    "product": product,
+                    "quantity": tx.Amount,
+                    "status": tx.get_status_display(),
+                }
 
         context["grouped_transactions"] = grouped_transactions
         return context
