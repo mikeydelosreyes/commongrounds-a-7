@@ -68,5 +68,5 @@ class EventSignup(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE,
                                   related_name='events', null=True)
     user_registrant = models.ForeignKey(Profile, on_delete=models.SET_NULL,
-                                  related_name='user_registrants', null=True)
-    new_registrant = models.CharField(max_length=255, null=True)
+                                  related_name='user_registrants', null=True, blank=True)
+    new_registrant = models.CharField(max_length=255, null=True, blank=True)

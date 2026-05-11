@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 
 from .forms import *
 from .models import *
+from accounts.mixins import *
 
 
 class EventListView(ListView): 
@@ -22,7 +23,8 @@ class EventListView(ListView):
             context["created_events"] = Event.objects.filter(organizer__user=self.request.user)
             #FIX SOURCE: https://docs.djangoproject.com/en/6.0/ref/models/querysets/
             context["signedup_events"] = users_signups.select_related("event").all()
-            context["other_events"] = Event.objects.exclude(organizer__user=self.request.user)
+            context["other_events"] = Event.objects.exclude(organizer__user=self.request.user).exclude(id__in=users_signups.select_related("event").all())
+                                                    
         return context
     
 
@@ -32,44 +34,43 @@ class EventDetailView(DetailView):
 
     def get_context_data(self, **kwargs): #change the link
         context = super().get_context_data(**kwargs)
+        event = Event.objects.get(pk=self.kwargs['pk'])
+        context['form'] = RegisteredUserEventSignupForm()
+        context['current_signups'] = EventSignup.objects.filter(event=event).count()
         return context
 
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        event = self.object        
+        event = self.get_object()      
         profile = request.user.profile
-        current_signups = EventSignup.objects.filter(event=event).count()
-        form = RegisteredUserEventSignupForm(request.POST)
 
         if 'registered_user_signup' in request.POST:
-            if event.event_capacity > current_signups and event.organizer != profile:
-                if self.request.user.is_authenticated:
-                    if form.is_valid():
-                        #existing user signup automatic
-                        form.save(commit=False)
-                        form.event = Event.objects.get(pk=self.kwargs['pk'])
-                        form.save(commit=False)
-                        form.user_registrant = profile
-                        return self.get(request, *args, **kwargs)
-                    else:
-                        self.object_list = self.get_queryset(**kwargs)
-                        context = self.get_context_data(**kwargs)
-                        context['form'] = form
-                        return self.render_to_response(context)
+            form = RegisteredUserEventSignupForm(request.POST)
+            if form.is_valid():
+                #existing user signup automatic
+                form.event = event
+                form.save(commit=False)
+                form.user_registrant = profile
+                form.save()
+                return redirect(self.get_success_url())
                     
 
         return redirect(self.get_success_url())
 
     
     def get_success_url(self):
-        return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.object.pk })
+        return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.kwargs['pk']})
 
 
 #FIX LATER: https://stackoverflow.com/questions/18246326/how-do-i-set-user-field-in-form-to-the-currently-logged-in-user
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
+    role_name = "Event Organizer"
+
+    def get_context_data(self, **kwargs): #change the link
+        context = super().get_context_data(**kwargs)
+        return context
 
 
     def form_valid(self, form):
@@ -84,10 +85,11 @@ class EventCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('localevents:event_detail', kwargs={ 'pk': self.object.pk })
 
 
-class EventUpdateView(LoginRequiredMixin, UpdateView):
+class EventUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
     template_name = "localevents/event_update.html"
+    role_name = "Event Organizer"
 
 
     def form_valid(self, form):

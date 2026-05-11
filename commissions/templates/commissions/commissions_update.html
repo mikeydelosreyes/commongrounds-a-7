@@ -1,0 +1,15 @@
+{% extends 'commissions/base_commissions.html' %}
+
+{% block header %}<h1>Update a Commission</h1>{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ formset.management_form }}
+        {% for job_form in formset %}
+        {{ job_form }}
+        {% endfor %}
+        <input type="submit" value="Save changes">
+    </form>
+{% endblock %}

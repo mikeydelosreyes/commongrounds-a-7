@@ -1,0 +1,37 @@
+{% extends 'commissions/base_commissions.html' %}
+
+{% block title %}{{ commission.title }}{% endblock %}
+{% block header %}<h1>Commission | {{ commission.title }}</h1> {% endblock %}
+
+{% block content %}
+    <h3><a href="{% url 'commissions:commission_list' %}">Go back to Commissions</a></h3>
+    <h2>Title: {{ commission.title }}</h2>
+    <ul>
+        <li>Description: {{ commission.description}}</li>
+        <li>Amount of people required: {{commission.people_required }}</li>
+        <li>Status: {{ commission.status }}</li>
+        <li>Total manpower: {{ total_manpower }}</li>
+        <li>Open manpower: {{ open_manpower }}</li>
+        <li>Created: {{ commission.created_on|date:"Y-m-d"}}</li>
+        <li>Last updated: {{ commission.updated_on|date:"Y-m-d"}}</li>
+    </ul>
+
+    {% for job in jobs %}
+    <h4>{{ job.role }}</h4>
+    <p>Required: {{ job.manpower_required }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="job_id" value="{{ job.id }}">
+            {% if job.accepted_count < job.manpower_required and user.is_authenticated %} 
+            <button>Apply to Job</button>
+            {% else %}
+            <button disabled>Apply to Job</button>
+            {% endif %}
+    </form>
+    {% endfor %}
+
+    {% if user.profile == object.maker %}
+    <a href="{% url 'commissions:commission_update' commission.id %}">Edit Commission</a>
+    {% endif %}
+
+{% endblock %}

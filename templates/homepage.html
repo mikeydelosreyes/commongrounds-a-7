@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commongrounds{% endblock %}
+{% block header %}<h1>Commongrounds</h1>{% endblock %}
+
+{% block content %}
+    <h3><a href="{% url 'merchstore:product_list' %}">Merchandise Store</a></h3>
+    <h3><a href="{% url 'localevents:event_list' %}">Local Events</a></h3>
+    <h3><a href="{% url 'bookclub:book_list' %}">Book Club</a></h3>
+    <h3><a href="{% url 'diyprojects:project_list' %}">DIY Projects</a></h3>
+    <h3><a href="{% url 'commissions:commission_list' %}">Book Club</a></h3>
+{% endblock %}
